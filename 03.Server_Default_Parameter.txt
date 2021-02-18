@@ -1,0 +1,42 @@
+## ------------------------------------------------------------------------------------
+## [Server] MySQL Server Configuration
+## ------------------------------------------------------------------------------------
+[mysqld]
+server-id = 1
+
+port = 3306
+basedir = /usr/local/mysql
+datadir = /usr/local/mysql/data
+tmpdir = /usr/local/mysql/tmp
+socket = /usr/local/mysql/tmp
+
+character-set-server = utf8
+collation-server = utf8_general_ci
+default-storage-engine = InnoDB
+skip_name_resolve = OFF
+skip-external-locking
+
+event_scheduler = on
+sysdate-is-now
+
+back_log = 100
+max_connections = 300
+max_connect_errors = 999999
+thread_cache_size = 50
+table_open_cache = 400
+wait_timeout = 28800
+
+max_allowed_packet = 1G
+max_heap_table_size = 32M
+tmp_table_size = 512K
+
+sort_buffer_size = 128K
+join_buffer_size = 128K
+read_buffer_size = 128K
+read_rnd_buffer_size = 128K
+
+group_concat_max_len = 1024
+
+## InnoDB Parameter
+innodb_stats_on_metadata = OFF
+innodb_stats_persistent = ON
