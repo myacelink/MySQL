@@ -8,35 +8,140 @@ port = 3306
 basedir = /usr/local/mysql
 datadir = /usr/local/mysql/data
 tmpdir = /usr/local/mysql/tmp
-socket = /usr/local/mysql/tmp
+socket = /usr/local/mysql/tmp/mysqld.sock
 
-character-set-server = utf8
-collation-server = utf8_general_ci
-default-storage-engine = InnoDB
+character_set_server = utf8
+collation_server = utf8_general_ci
+default_storage_engine = InnoDB
 skip_name_resolve = OFF
-skip-external-locking
+skip_external_locking = ON
 
 event_scheduler = on
-sysdate-is-now
 
-back_log = 100
+back_log = 512
 max_connections = 300
 max_connect_errors = 999999
 thread_cache_size = 50
-table_open_cache = 400
+table_open_cache = 2000
 wait_timeout = 28800
 
 max_allowed_packet = 1G
-max_heap_table_size = 32M
-tmp_table_size = 512K
+max_heap_table_size = 16777216
+tmp_table_size = 16777216
 
-sort_buffer_size = 128K
-join_buffer_size = 128K
-read_buffer_size = 128K
-read_rnd_buffer_size = 128K
+sort_buffer_size = 1M
+join_buffer_size = 1M
+read_buffer_size = 1M
+read_rnd_buffer_size = 1M
 
 group_concat_max_len = 1024
 
-## InnoDB Parameter
-innodb_stats_on_metadata = OFF
+performance_schema = 1
+
+query_cache_limit = 0
+query_cache_size = 0
+query_cache_type = 0
+
+## InnoDB Parameter ------------------------
 innodb_stats_persistent = ON
+innodb_stats_on_metadata = OFF
+innodb_stats_transient_sample_pages = 8
+innodb_max_dirty_pages_pct = 90
+innodb_adaptive_hash_index = 1
+innodb_file_format = Barracuda
+innodb_strict_mode = 1
+
+#* innodb_flush_sync가 ON이면 innodb_io_capacity 무시됨.
+# innodb_io_capacity 사용하려면 innodb_flush_sync를 Off로 수정.
+innodb_flush_sync = ON
+# innodb_io_capacity = 600
+
+#* CPU Core 갯수.
+innodb_write_io_threads = 4
+innodb_read_io_threads = 4
+
+innodb_autoinc_lock_mode = 1
+innodb_adaptive_flushing = 1
+innodb_change_buffering = all
+innodb_old_blocks_time = 500
+
+#* 전체 메모리의 50% ~ 60%
+innodb_buffer_pool_size = 2G
+
+innodb_file_per_table = 1
+innodb_data_home_dir = /usr/local/mysql/data
+innodb_data_file_path = ibdata1:100M:autoextend
+innodb_log_group_home_dir = /usr/local/mysql/data
+innodb_log_buffer_size = 60M
+innodb_log_file_size = 1024M
+innodb_log_files_in_group = 2
+innodb_support_xa = 0
+innodb_print_all_deadlocks = 1
+
+innodb_thread_concurrency = 0
+innodb_lock_wait_timeout = 60
+innodb_flush_log_at_trx_commit = 1
+innodb_force_recovery = 0
+# innodb_flush_method = O_DIRECT
+innodb_doublewrite = 1
+innodb_sync_spin_loops = 20
+innodb_table_locks = 1
+innodb_thread_sleep_delay = 1000
+innodb_max_purge_lag = 0
+innodb_commit_concurrency = 0
+innodb_concurrency_tickets = 500
+innodb_rollback_on_timeout = 0
+innodb_rollback_segments=128
+innodb_table_locks = 1
+innodb_thread_concurrency = 0
+
+transaction_isolation = REPEATABLE-READ
+
+## MySAM Option ------------------------
+key_buffer_size = 32M
+bulk_insert_buffer_size = 32M
+myisam_sort_buffer_size = 1M
+myisam_max_sort_file_size = 2G
+myisam_repair_threads = 1
+myisam_recover_options = OFF
+ft_min_word_len = 4
+
+## LOGGING ----------------------------
+pid_file = /usr/local/mysql/logs/mysqld.pid
+# log_warnings = 1
+log_error = /usr/local/mysql/logs/mysqld.err
+
+general_log = 0
+general_log_file = /usr/local/mysql/logs/general_query.log
+log_slow_admin_statements = 0
+
+long_query_time = 2
+slow_query_log = 1
+slow_query_log_file = /usr/local/mysql/logs/slow_query.log
+# log_output=FILE,TABLE
+
+
+## replication - Master
+log_bin = /usr/local/mysql/logs/binary_log
+binlog_cache_size = 128K
+max_binlog_size = 512M
+# expire_logs_day = 14
+log_bin_trust_function_creators = 1
+sync_binlog = 1
+
+## replication - Slave
+relay_log = //usr/local/mysql/logs/relay_log
+relay_log_purge = 1
+read_only = 1
+
+
+## ------------------------------------------------------------------------------------
+## [CLIENT] Client 프로그램 설정.
+## ------------------------------------------------------------------------------------
+[client]
+
+## ------------------------------------------------------------------------------------
+## [MySQL Client] MySQL Client 프로그램 설정.
+## ------------------------------------------------------------------------------------
+[mysql]
+socket = /usr/local/mysql/tmp/mysqld.sock
