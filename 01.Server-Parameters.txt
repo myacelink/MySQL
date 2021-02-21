@@ -1467,6 +1467,31 @@
 # 
 # --------------------------------------------
 # 
+# max_heap_table_size
+# 
+# Command-Line Format	--max-heap-table-size=#
+# System Variable	max_heap_table_size
+# Scope	Global, Session
+# Dynamic	Yes
+# Type	Integer
+# Default Value	16777216
+# Minimum Value	16384
+# Maximum Value (64-bit platforms)	1844674407370954752
+# Maximum Value (32-bit platforms)	4294967295
+#
+# 이 변수는 사용자가 생성한 MEMORY 테이블이 사용할 수 있는 최대 크기를 설정합니다. 변수 값은 MEMORY 테이블 MAX_ROWS 값을 계산하는 데 사용됩니다.
+# 이 변수를 설정해도 테이블이 CREATE TABLE과 같은 명령문으로 다시 작성되거나 ALTER TABLE 또는 TRUNCATE TABLE로 변경되지 않는 한 기존 MEMORY 테이블에 영향을 미치지 않습니다.
+# 서버를 다시 시작하면 기존 MEMORY 테이블의 최대 크기도 전역 max_heap_table_size 값으로 설정됩니다.
+#
+# 이 변수는 내부 메모리 테이블의 크기를 제한하기 위해 tmp_table_size와 함께 사용됩니다. 8.4.4 절.“MySQL에서 내부 임시 테이블 사용”을 참조하십시오.
+#
+# max_heap_table_size는 복제되지 않습니다. 자세한 내용은 Section 16.4.1.20,“Replication and MEMORY Tables”및 Section 16.4.1.37,“Replication and Variables”를 참조하십시오.
+# 
+# * Apply Option
+# max_heap_table_size=16777216
+#
+# # --------------------------------------------
+# 
 # @ tmpdir :
 # 
 # Property : Value
