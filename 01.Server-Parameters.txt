@@ -1,8 +1,29 @@
 # ===================================
 # ======= 서버 시스템 변수  ==========
 # ===================================
+# @ avoid_temporal_upgrade
 # 
-# @ autocommit : 
+# Command-Line Format : --avoid-temporal-upgrade[={OFF|ON}]
+# Deprecated : Yes
+# System Variable : avoid_temporal_upgrade
+# Scope : Global
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : OFF
+#
+# 이 변수는 ALTER TABLE이 5.6.4 이전 형식 (분수 초 정밀도를 지원하지 않는 TIME, DATETIME 및 TIMESTAMP 컬럼)인 것으로 확인된 임시 컬럼을 암시 적으로 업그레이드할지 여부를 제어합니다.
+# 이러한 컬럼을 업그레이드하려면 테이블을 다시 빌드해야하므로 수행할 작업에 적용할 수 있는 빠른 변경을 사용할 수 없습니다.
+# 
+# 이 변수는 기본적으로 비활성화되어 있습니다. 이를 활성화하면 ALTER TABLE이 임시 컬럼을 다시 작성하지 않으므로 가능한 빠른 변경을 활용할 수 있습니다.
+# 
+# 이 변수는 더 이상 사용되지 않습니다. MySQL의 향후 릴리스에서 제거 될 것으로 예상됩니다.
+# 
+# * Apply Option
+# avoid_temporal_upgrade=OFF
+# 
+# --------------------------------------------
+# 
+# @ autocommit
 # 
 # Property : Value
 # Command-Line Format : --autocommit[={OFF|ON}]
@@ -25,7 +46,7 @@
 # 
 # --------------------------------------------
 # 
-# automatic_sp_privileges
+# @ automatic_sp_privileges
 # 
 # Command-Line Format	--automatic-sp-privileges[={OFF|ON}]
 # System Variable	automatic_sp_privileges
@@ -49,7 +70,7 @@
 # 
 # --------------------------------------------
 # 
-# auto_increment_increment
+# @ auto_increment_increment
 # 
 # Command-Line Format	--auto-increment-increment=#
 # System Variable	auto_increment_increment
@@ -210,7 +231,7 @@
 # 
 # --------------------------------------------
 #
-# auto_increment_offset
+# @ auto_increment_offset
 # 
 # Command-Line Format	--auto-increment-offset=#
 # System Variable	auto_increment_offset
@@ -259,6 +280,21 @@
 # 
 # --------------------------------------------
 # 
+# @ basedir
+# 
+# Command-Line Format : --basedir=dir_name
+# System Variable : basedir
+# Scope : Global
+# Dynamic : No
+# Type : Directory name
+# 
+# MySQL 설치 기본 디렉토리
+#
+# * Apply Option
+# basedir=<Directory>
+# 
+# --------------------------------------------
+# 
 # @ big_tables :
 # 
 # Property : Value
@@ -297,6 +333,42 @@
 #
 # * Apply Option
 # connect_timeout=10
+# 
+# --------------------------------------------
+# 
+# bind_address
+# 
+# Command-Line Format	--bind-address=addr
+# System Variable	bind_address
+# Scope	Global
+# Dynamic	No
+# Type	String
+# Default Value	*
+# 
+# MySQL 서버는 TCP / IP 연결을 위해 단일 네트워크 소켓에서 수신합니다. 이 소켓은 단일 주소에 바인딩되지만 주소가 여러 네트워크 인터페이스에 매핑 될 수 있습니다.
+# 주소를 지정하려면 서버 시작시 bind_address = addr을 설정하십시오. 여기서 addr은 IPv4 또는 IPv6 주소 또는 호스트 이름입니다. addr이 호스트 이름이면 서버는 이름을 IP 주소로 확인하고 해당 주소에 바인딩합니다.
+# 호스트 이름이 여러 IP 주소로 확인되는 경우 서버는 첫 번째 IPv4 주소 (있는 경우)를 사용하거나 첫 번째 IPv6 주소를 사용합니다.
+# 
+# 서버는 다음과 같이 다양한 유형의 주소를 처리합니다.
+# 주소가 * 이면 서버는 모든 서버 호스트 IPv4 인터페이스에서 TCP / IP 연결을 허용하고 서버 호스트가 IPv6를 지원하는 경우 모든 IPv6 인터페이스에서 TCP / IP 연결을 허용합니다.
+# 이 주소를 사용하여 모든 서버 인터페이스에서 IPv4 및 IPv6 연결을 모두 허용합니다. 이 값이 기본값입니다.
+# 
+# 주소가 0.0.0.0이면 서버는 모든 서버 호스트 IPv4 인터페이스에서 TCP / IP 연결을 허용합니다. 
+# 주소가 ::이면 서버는 모든 서버 호스트 IPv4 및 IPv6 인터페이스에서 TCP / IP 연결을 허용합니다.
+# 
+# 주소가 IPv4 매핑 주소 인 경우 서버는 IPv4 또는 IPv6 형식의 해당 주소에 대한 TCP / IP 연결을 허용합니다.
+# 예를 들어 서버가 :: ffff : 127.0.0.1에 바인딩 된 경우 클라이언트는 --host = 127.0.0.1 또는 --host = :: ffff : 127.0.0.1을 사용하여 연결할 수 있습니다.
+# 주소가 "일반"IPv4 또는 IPv6 주소 (예 : 127.0.0.1 또는 :: 1) 인 경우 서버는 해당 IPv4 또는 IPv6 주소에 대해서만 TCP / IP 연결을 허용합니다.
+# 주소 바인딩에 실패하면 서버에서 오류가 발생하고 시작되지 않습니다.
+# 
+# 서버를 특정 주소에 바인딩하려는 경우 mysql.user 시스템 테이블에 해당 주소에 연결하는 데 사용할 수있는 관리 권한이있는 계정이 포함되어 있는지 확인하십시오.
+# 그렇지 않으면 서버를 종료 할 수 없습니다. 예를 들어 서버를 *에 바인딩하면 기존의 모든 계정을 사용하여 연결할 수 있습니다.
+# 그러나 서버를 :: 1로 바인딩하면 해당 주소에서만 연결을 허용합니다. 이 경우 먼저 mysql.user 테이블에 'root'@ ':: 1'계정이 있는지 확인하여 서버에 계속 연결하여 종료 할 수 있습니다.
+# 
+# 이 변수는 임베디드 서버 (libmysqld)에 영향을 미치지 않으며 임베디드 서버 내에서 보이지 않습니다.
+#
+# * Apply Option
+# bind_address=*
 # 
 # --------------------------------------------
 # 
@@ -1256,10 +1328,6 @@
 # rbr_exec_mode=STRICT
 # 
 # --------------------------------------------
-
-
-
-# --------------------------------------------
 # 
 # read_buffer_size
 # 
@@ -1739,7 +1807,7 @@
 # 
 # --------------------------------------------
 # 
-# max_heap_table_size
+# @ max_heap_table_size
 # 
 # Command-Line Format	--max-heap-table-size=#
 # System Variable	max_heap_table_size
@@ -1944,7 +2012,7 @@
 # 
 # --------------------------------------------
 # 
-# pid_file
+# @ pid_file
 # 
 # Command-Line Format : --pid-file=file_name
 # System Variable : pid_file
@@ -1966,7 +2034,7 @@
 # -------------character set 관련 변수들.----------
 # ----------------------------------------------------
 # 
-# character_set_client
+# @ character_set_client
 # 
 # System Variable : character_set_client
 # Scope L Global, Session
@@ -1989,7 +2057,7 @@
 # 
 # # --------------------------------------------
 # 
-# character_set_connection
+# @ character_set_connection
 # 
 # System Variable : character_set_connection
 # Scope : Global, Session
@@ -1997,7 +2065,6 @@
 # Type : String
 # Default Value : utf8
 # 
-# The character set used for literals specified without a character set introducer and for number-to-string conversion. For information about introducers, see Section 10.3.8, “Character Set Introducers”.
 # 문자 세트 소개없이 지정된 리터럴 및 숫자-문자열 변환에 사용되는 문자 세트입니다. 소개 자에 대한 정보는 10.3.8 절.“문자 집합 소개 자”를 참조하십시오.
 #
 # * Apply Option
@@ -2005,7 +2072,7 @@
 #
 # # --------------------------------------------
 # 
-# character_set_database
+# @ character_set_database
 # 
 # System Variable : character_set_database
 # Scope : Global, Session
@@ -2022,9 +2089,9 @@
 # * Apply Option
 # character_set_database=latin1
 #
-# # --------------------------------------------
+# --------------------------------------------
 # 
-# character_set_filesystem
+# @ character_set_filesystem
 # 
 # Command-Line Format	--character-set-filesystem=name
 # System Variable	character_set_filesystem
@@ -2041,9 +2108,9 @@
 # * Apply Option
 # character_set_database=binary
 #
-# # --------------------------------------------
+# --------------------------------------------
 # 
-# character_set_results
+# @ character_set_results
 # 
 # System Variable	character_set_results
 # Scope	Global, Session
@@ -2057,9 +2124,9 @@
 # * Apply Option
 # character_set_results=utf8
 #
-# # --------------------------------------------
+# --------------------------------------------
 # 
-# character_set_server
+# @ character_set_server
 # 
 # Command-Line Format	--character-set-server=name
 # System Variable	character_set_server
@@ -2075,7 +2142,7 @@
 #
 # # --------------------------------------------
 # 
-# character_set_system
+# @ character_set_system
 # 
 # System Variable : character_set_system
 # Scope : Global
@@ -2090,7 +2157,7 @@
 #
 # # --------------------------------------------
 # 
-# character_sets_dir
+# @ character_sets_dir
 # 
 # Command-Line Format : --character-sets-dir=dir_name
 # System Variable : character_sets_dir
@@ -2817,7 +2884,9 @@
 # Type : Integer
 # Default Value : -1 (signifies autoscaling; do not assign this literal value)
 #
-# ready_statements_instances 테이블의 최대 행 수입니다. 이 최대 값을 초과하여 준비된 명령문을 계측 할 수없는 경우 성능 스키마는 Performance_schema_prepared_statements_lost 상태 변수를 증가시킵니다. 이 변수를 설정하고 사용하는 방법에 대한 자세한 내용은 25.7 절“성능 스키마 상태 모니터링”을 참조하십시오.
+# ready_statements_instances 테이블의 최대 행 수입니다.
+# 이 최대 값을 초과하여 준비된 명령문을 계측 할 수없는 경우 성능 스키마는 Performance_schema_prepared_statements_lost 상태 변수를 증가시킵니다.
+# 이 변수를 설정하고 사용하는 방법에 대한 자세한 내용은 25.7 절“성능 스키마 상태 모니터링”을 참조하십시오.
 # 
 # 이 변수의 기본값은 max_prepared_stmt_count 시스템 변수의 값을 기반으로 자동 크기 조정됩니다.
 #
@@ -2855,7 +2924,8 @@
 # Type : Integer
 # Default Value : -1 (signifies autoscaling; do not assign this literal value)
 #
-# 성능 스키마가 통계를 유지하는 최대 저장된 프로그램 수입니다. 이 최대 값을 초과하면 성능 스키마가 Performance_schema_program_lost 상태 변수를 증가시킵니다. 이 변수를 설정하고 사용하는 방법에 대한 자세한 내용은 25.7 절“성능 스키마 상태 모니터링”을 참조하십시오.
+# 성능 스키마가 통계를 유지하는 최대 저장된 프로그램 수입니다. 이 최대 값을 초과하면 성능 스키마가 Performance_schema_program_lost 상태 변수를 증가시킵니다.
+# 이 변수를 설정하고 사용하는 방법에 대한 자세한 내용은 25.7 절“성능 스키마 상태 모니터링”을 참조하십시오.
 #
 # * Apply Option
 # performance_schema_max_program_instances=-1
@@ -3002,7 +3072,9 @@
 # Type : Integer
 # Default Value : -1 (자동 확장을 나타냅니다.이 리터럴 값을 할당하지 마십시오)
 # 
-# 열린 테이블 개체의 최대 개수입니다. 이 값은 table_handles 테이블의 크기를 제어합니다. 이 최대 값을 초과하여 테이블 핸들을 계측 할 수없는 경우 성능 스키마는 Performance_schema_table_handles_lost 상태 변수를 증가시킵니다. 이 변수를 설정하고 사용하는 방법에 대한 자세한 내용은 25.7 절“성능 스키마 상태 모니터링”을 참조하십시오.
+# 열린 테이블 개체의 최대 개수입니다. 이 값은 table_handles 테이블의 크기를 제어합니다.
+# 이 최대 값을 초과하여 테이블 핸들을 계측 할 수없는 경우 성능 스키마는 Performance_schema_table_handles_lost 상태 변수를 증가시킵니다.
+# 이 변수를 설정하고 사용하는 방법에 대한 자세한 내용은 25.7 절“성능 스키마 상태 모니터링”을 참조하십시오.
 #
 # * Apply Option
 # performance_schema_max_table_handles=-1
@@ -3253,7 +3325,8 @@
 # Type : String
 # Default Value : time_zone, autocommit, character_set_client, character_set_results, character_set_connection
 # 
-# 서버가 세션 시스템 변수에 대한 지정을 추적하고 클라이언트에게 지정된 각 변수의 이름과 값을 통지하는지 여부를 제어합니다. 변수 값은 할당을 추적 할 쉼표로 구분 된 변수 목록입니다. 기본적으로 time_zone, 자동 커밋, character_set_client, character_set_results 및 character_set_connection에 대해 알림이 사용됩니다. 후자의 세 변수는 SET NAMES의 영향을받는 변수입니다.
+# 서버가 세션 시스템 변수에 대한 지정을 추적하고 클라이언트에게 지정된 각 변수의 이름과 값을 통지하는지 여부를 제어합니다. 변수 값은 할당을 추적 할 쉼표로 구분 된 변수 목록입니다.
+# 기본적으로 time_zone, 자동 커밋, character_set_client, character_set_results 및 character_set_connection에 대해 알림이 사용됩니다. 후자의 세 변수는 SET NAMES의 영향을받는 변수입니다.
 # 특수 값 *은 서버가 모든 세션 변수에 대한 지정을 추적하게합니다. 주어진 경우이 값은 특정 시스템 변수 이름없이 자체적으로 지정해야합니다.
 # 세션 변수 할당 알림을 비활성화하려면 session_track_system_variables를 빈 문자열로 설정하십시오.
 # 세션 시스템 변수 추적이 사용 가능한 경우 새 값이 이전 값과 동일하더라도 추적 된 세션 변수에 대한 모든 지정에 대해 알림이 발생합니다.
@@ -3285,7 +3358,9 @@
 # READ WRITE
 # WITH CONSISTENT SNAPSHOT
 # 
-# 클라이언트가 트랜잭션을 다른 세션으로 안전하게 재배치하려면 트랜잭션 상태뿐만 아니라 트랜잭션 특성도 추적해야합니다. 또한 클라이언트는 transaction_isolation 및 transaction_read_only 시스템 변수를 추적하여 세션 기본값을 올바르게 결정해야합니다. 이러한 변수를 추적하려면 session_track_system_variables 시스템 변수의 값에 변수를 나열하십시오.
+# 클라이언트가 트랜잭션을 다른 세션으로 안전하게 재배치하려면 트랜잭션 상태뿐만 아니라 트랜잭션 특성도 추적해야합니다.
+# 또한 클라이언트는 transaction_isolation 및 transaction_read_only 시스템 변수를 추적하여 세션 기본값을 올바르게 결정해야합니다.
+# 이러한 변수를 추적하려면 session_track_system_variables 시스템 변수의 값에 변수를 나열하십시오.
 # 
 # 세션 상태 추적에 대한 자세한 내용은 5.1.14 절“클라이언트 세션 상태 변경에 대한 서버 추적”을 참조하십시오.
 #
@@ -3341,9 +3416,10 @@
 # Dynamic : Yes
 # Type : Integer
 # Default Value : 10000
-# A value in milliseconds that controls how long the master waits on a commit for acknowledgment from a slave before timing out and reverting to asynchronous replication. The Default Value : is 10000 (10 seconds).
+#
+# 시간 초과 및 비동기 복제로 되돌리기 전에 마스터가 슬레이브로부터 승인을 받기 위해 커밋을 기다리는 시간을 제어하는 밀리 초 단위의 값입니다. 기본값은 10000 (10 초)입니다.
 # 
-# This variable is available only if the master-side semisynchronous replication plugin is installed.
+# 이 변수는 마스터 측 반동기 복제 플러그인이 설치된 경우에만 사용할 수 있습니다.
 #
 # * Apply Option
 # rpl_semi_sync_master_timeout=10000
@@ -3563,7 +3639,8 @@
 # 
 # 
 # ### Statement-based replication. ###
-# 기본 데이터베이스 (USE에서 선택한 데이터베이스)가 db_name 인 명령문으로 복제를 제한하도록 슬레이브 SQL 스레드에 지시하십시오. 둘 이상의 데이터베이스를 지정하려면 각 데이터베이스에 대해이 옵션을 여러 번 사용하십시오. 그러나 이렇게하면 다른 데이터베이스 (또는 데이터베이스 없음)가 선택된 동안 UPDATE some_db.some_table SET foo = 'bar'와 같은 데이터베이스 간 문을 복제하지 않습니다.
+# 기본 데이터베이스 (USE에서 선택한 데이터베이스)가 db_name 인 명령문으로 복제를 제한하도록 슬레이브 SQL 스레드에 지시하십시오. 둘 이상의 데이터베이스를 지정하려면 각 데이터베이스에 대해이 옵션을 여러 번 사용하십시오.
+# 그러나 이렇게하면 다른 데이터베이스 (또는 데이터베이스 없음)가 선택된 동안 UPDATE some_db.some_table SET foo = 'bar'와 같은 데이터베이스 간 문을 복제하지 않습니다.
 # 
 # 경고
 # 여러 데이터베이스를 지정하려면이 옵션의 여러 인스턴스를 사용해야합니다. 데이터베이스 이름은 쉼표를 포함 할 수 있으므로 쉼표로 구분 된 목록을 제공하면 목록이 단일 데이터베이스의 이름으로 취급됩니다.
@@ -3572,36 +3649,41 @@
 # 
 # USE prices;
 # UPDATE sales.january SET amount=amount+1000;
-# 이“기본 데이터베이스 만 검사”동작의 주된 이유는 명령문만으로는 복제 여부를 알기가 어렵 기 때문입니다 (예 : 다중 테이블 DELETE 문 또는 다중 테이블 UPDATE 문을 사용하는 경우) 여러 데이터베이스에서). 필요하지 않은 경우 모든 데이터베이스가 아닌 기본 데이터베이스 만 확인하는 것이 더 빠릅니다.
+# 이“기본 데이터베이스 만 검사”동작의 주된 이유는 명령문만으로는 복제 여부를 알기가 어렵 기 때문입니다 (예 : 다중 테이블 DELETE 문 또는 다중 테이블 UPDATE 문을 사용하는 경우) 여러 데이터베이스에서).
+# 필요하지 않은 경우 모든 데이터베이스가 아닌 기본 데이터베이스 만 확인하는 것이 더 빠릅니다.
 # 
 # 
 # ### Row-based replication. ###
-# 슬레이브 SQL 스레드에게 복제를 데이터베이스 db_name으로 제한하도록 지시합니다. db_name에 속하는 테이블 만 변경됩니다. 현재 데이터베이스는 이에 영향을 미치지 않습니다. 슬레이브가 --replicate-do-db = sales로 시작되고 행 기반 복제가 적용되고 마스터에서 다음 명령문이 실행된다고 가정하십시오.
+# 슬레이브 SQL 스레드에게 복제를 데이터베이스 db_name으로 제한하도록 지시합니다. db_name에 속하는 테이블 만 변경됩니다. 현재 데이터베이스는 이에 영향을 미치지 않습니다.
+# 슬레이브가 --replicate-do-db = sales로 시작되고 행 기반 복제가 적용되고 마스터에서 다음 명령문이 실행된다고 가정하십시오.
 # 
 # USE prices;
 # UPDATE sales.february SET amount=amount+100;
-# 슬레이브의 영업 데이터베이스에있는 2 월 테이블은 UPDATE 문에 따라 변경됩니다. 이것은 USE 문이 발행되었는지 여부에 관계없이 발생합니다. 그러나 마스터에서 다음 명령문을 발행해도 행 기반 복제 및 --replicate-do-db = sales를 사용할 때 슬레이브에 영향을 미치지 않습니다.
+# 슬레이브의 영업 데이터베이스에있는 2 월 테이블은 UPDATE 문에 따라 변경됩니다. 이것은 USE 문이 발행되었는지 여부에 관계없이 발생합니다.
+# 그러나 마스터에서 다음 명령문을 발행해도 행 기반 복제 및 --replicate-do-db = sales를 사용할 때 슬레이브에 영향을 미치지 않습니다.
 # 
 # USE prices;
 # UPDATE prices.march SET amount=amount-25;
 # USE 가격 명세서가 USE 판매로 변경 되더라도 UPDATE 문의 효과는 여전히 복제되지 않습니다.
 # 
-# 여러 데이터베이스를 참조하는 문과 관련하여 행 기반 복제와 달리 행 기반 복제와 달리 --replicate-do-db가 문 기반 복제에서 처리되는 방식의 또 다른 중요한 차이점입니다. 슬레이브가 --replicate-do-db = db1로 시작되고 마스터에서 다음 명령문이 실행된다고 가정하십시오.
+# 여러 데이터베이스를 참조하는 문과 관련하여 행 기반 복제와 달리 행 기반 복제와 달리 --replicate-do-db가 문 기반 복제에서 처리되는 방식의 또 다른 중요한 차이점입니다.
+# 슬레이브가 --replicate-do-db = db1로 시작되고 마스터에서 다음 명령문이 실행된다고 가정하십시오.
 # 
 # USE db1;
 # UPDATE db1.table1 SET col1 = 10, db2.table2 SET col2 = 20;
-# If you are using statement-based replication, then both tables are updated on the slave. However, when using row-based replication, only table1 is affected on the slave; since table2 is in a different database, table2 on the slave is not changed by the UPDATE. Now suppose that, instead of the USE db1 statement, a USE db4 statement had been used:
+# 명령문 기반 복제를 사용하는 경우 두 테이블이 모두 슬레이브에서 업데이트됩니다. 그러나 행 기반 복제를 사용하는 경우 table1 만 슬레이브에서 영향을받습니다.
+# table2는 다른 데이터베이스에 있으므로 슬레이브의 table2는 UPDATE에 의해 변경되지 않습니다. 이제 USE db1 문 대신 USE db4 문이 사용되었다고 가정합니다.
 # 
 # USE db4;
 # UPDATE db1.table1 SET col1 = 10, db2.table2 SET col2 = 20;
-# 이 경우 명령문 기반 복제를 사용할 때 UPDATE 문은 슬레이브에 영향을 미치지 않습니다. 그러나 행 기반 복제를 사용하는 경우 UPDATE는 슬레이브의 table1을 변경하지만 table2는 변경하지 않습니다. 즉, --replicate-do-db로 이름 지정된 데이터베이스의 테이블 만 변경되고 기본값은 선택됩니다. 데이터베이스는이 동작에 영향을 미치지 않습니다.
+# 이 경우 명령문 기반 복제를 사용할 때 UPDATE 문은 슬레이브에 영향을 미치지 않습니다. 그러나 행 기반 복제를 사용하는 경우 UPDATE는 슬레이브의 table1을 변경하지만 table2는 변경하지 않습니다.
+# 즉, --replicate-do-db로 이름 지정된 데이터베이스의 테이블 만 변경되고 기본값은 선택됩니다. 데이터베이스는이 동작에 영향을 미치지 않습니다.
 # 
 # 데이터베이스 간 업데이트가 필요하면 --replicate-wild-do-table = db_name. %를 대신 사용하십시오. 16.2.5 절“서버가 복제 필터링 규칙을 평가하는 방법”을 참조하십시오.
 # 
 # 노트
-# 이 옵션은 --binlog-do-db가 이진 로깅에 영향을 미치는 것과 같은 방식으로 복제에 영향을 미치며 --replicate-do-db가 복제 동작에 미치는 영향에 대한 복제 형식의 영향은 복제 형식의 영향과 동일합니다. --binlog-do-db의 동작
-# 
-# 이 옵션은 BEGIN, COMMIT 또는 ROLLBACK 문에는 영향을 미치지 않습니다.
+# 이 옵션은 --binlog-do-db가 이진 로깅에 영향을 미치는 것과 같은 방식으로 복제에 영향을 미치며 --replicate-do-db가 복제 동작에 미치는 영향에 대한 복제 형식의 영향은 복제 형식의 영향과 동일합니다.
+# --binlog-do-db의 동작이 옵션은 BEGIN, COMMIT 또는 ROLLBACK 문에는 영향을 미치지 않습니다.
 #
 # * Apply Option
 # replicate-do-db=db_name
@@ -3642,9 +3724,8 @@
 # 데이터베이스 간 업데이트가 필요하면 --replicate-wild-ignore-table = db_name. %를 대신 사용하십시오. 16.2.5 절“서버가 복제 필터링 규칙을 평가하는 방법”을 참조하십시오.
 # 
 # 노트
-# 이 옵션은 --binlog-ignore-db가 이진 로깅에 영향을 미치는 것과 같은 방식으로 복제에 영향을 미치며 --replicate-ignore-db가 복제 동작에 미치는 영향에 대한 복제 형식의 영향은 복제 형식의 영향과 동일합니다. --binlog-ignore-db의 동작
-# 
-# 이 옵션은 BEGIN, COMMIT 또는 ROLLBACK 문에는 영향을 미치지 않습니다.
+# 이 옵션은 --binlog-ignore-db가 이진 로깅에 영향을 미치는 것과 같은 방식으로 복제에 영향을 미치며 --replicate-ignore-db가 복제 동작에 미치는 영향에 대한 복제 형식의 영향은 복제 형식의 영향과 동일합니다.
+# --binlog-ignore-db의 동작이 옵션은 BEGIN, COMMIT 또는 ROLLBACK 문에는 영향을 미치지 않습니다.
 #
 # * Apply Option
 # replicate-ignore-db=db_name
@@ -3825,14 +3906,16 @@
 # 
 # 일반적으로 슬레이브에서 오류가 발생하면 복제가 중지되므로 데이터의 불일치를 수동으로 해결할 수 있습니다. 이 옵션은 명령문이 옵션 값에 나열된 오류를 리턴 할 때 슬레이브 SQL 스레드가 복제를 계속하게합니다.
 # 
-# 오류가 발생하는 이유를 완전히 이해하지 않으면이 옵션을 사용하지 마십시오. 복제 설정 및 클라이언트 프로그램에 버그가없고 MySQL 자체에 버그가없는 경우 복제를 중지하는 오류가 발생하지 않아야합니다. 이 옵션을 무차별 적으로 사용하면 슬레이브가 마스터와 동기화되지 않게되어 왜 이런 일이 발생했는지 알 수 없습니다.
+# 오류가 발생하는 이유를 완전히 이해하지 않으면이 옵션을 사용하지 마십시오. 복제 설정 및 클라이언트 프로그램에 버그가없고 MySQL 자체에 버그가없는 경우 복제를 중지하는 오류가 발생하지 않아야합니다.
+# 이 옵션을 무차별 적으로 사용하면 슬레이브가 마스터와 동기화되지 않게되어 왜 이런 일이 발생했는지 알 수 없습니다.
 # 
 # 오류 코드의 경우 슬레이브 오류 로그 및 SHOW SLAVE STATUS 출력에 오류 메시지가 제공 한 숫자를 사용해야합니다.
 # 부록 B, 오류, 오류 코드 및 일반적인 문제에는 서버 오류 코드가 나와 있습니다.
 # 
 # 속기 값 ddl_exist_errors는 오류 코드 목록 1007,1008,1050,1051,1054,1060,1061,1068,1094,1146과 같습니다.
 # 
-# 또한 권장하지 않는 all 값을 사용하여 슬레이브가 모든 오류 메시지를 무시하고 상황에 관계없이 계속 진행할 수 있습니다. 말할 것도없이, 모두를 사용하면 데이터의 무결성에 대한 보장이 없습니다. 이 경우 슬레이브의 데이터가 마스터에있는 데이터와 가까운 곳에 있지 않은 경우이 경우 불평하거나 파일 버그 보고서를 작성하지 마십시오. 경고를 받았습니다.
+# 또한 권장하지 않는 all 값을 사용하여 슬레이브가 모든 오류 메시지를 무시하고 상황에 관계없이 계속 진행할 수 있습니다. 말할 것도없이, 모두를 사용하면 데이터의 무결성에 대한 보장이 없습니다.
+# 이 경우 슬레이브의 데이터가 마스터에있는 데이터와 가까운 곳에 있지 않은 경우이 경우 불평하거나 파일 버그 보고서를 작성하지 마십시오. 경고를 받았습니다.
 # 
 # 예제:
 # --slave-skip-errors=1062,1053
@@ -4388,7 +4471,9 @@
 # 
 # 슬레이브 스레드가 복제 중 충돌 및 오류를 해결하는 방법을 제어합니다. IDEMPOTENT 모드는 중복 키 및 키가없는 오류를 억제합니다. 엄격은 그러한 억제가 일어나지 않음을 의미합니다.
 # 
-# IDEMPOTENT 모드는 다중 마스터 복제, 순환 복제 및 NDB 클러스터 복제를위한 기타 특수 복제 시나리오에서 사용하기위한 것입니다. 자세한 내용은 21.6.10 절“NDB 클러스터 복제 : 다중 마스터 및 순환 복제”및 21.6.11 절“NDB 클러스터 복제 충돌 해결”을 참조하십시오. NDB 클러스터는 slave_exec_mode에 대해 명시 적으로 설정된 값을 무시합니다. 항상 그것을 IDEMPOTENT로 취급합니다.
+# IDEMPOTENT 모드는 다중 마스터 복제, 순환 복제 및 NDB 클러스터 복제를위한 기타 특수 복제 시나리오에서 사용하기위한 것입니다.
+# 자세한 내용은 21.6.10 절“NDB 클러스터 복제 : 다중 마스터 및 순환 복제”및 21.6.11 절“NDB 클러스터 복제 충돌 해결”을 참조하십시오.
+# NDB 클러스터는 slave_exec_mode에 대해 명시 적으로 설정된 값을 무시합니다. 항상 그것을 IDEMPOTENT로 취급합니다.
 # 
 # MySQL Server 5.7에서는 STRICT 모드가 기본값입니다.
 # 
@@ -4623,7 +4708,8 @@
 # 
 # -기본값은 INDEX_SCAN, TABLE_SCAN입니다. 이는 인덱스를 사용할 수있는 모든 검색에서이를 사용하며 인덱스가없는 검색은 테이블 스캔을 사용함을 의미합니다.
 # -기본 또는 고유 키를 사용하지 않는 검색에 해싱을 사용하려면 INDEX_SCAN, HASH_SCAN을 설정하십시오. INDEX_SCAN, HASH_SCAN을 지정하면 허용되는 INDEX_SCAN, TABLE_SCAN, HASH_SCAN을 지정하는 것과 동일한 효과가 있습니다.
-# -TABLE_SCAN, HASH_SCAN 조합을 사용하지 마십시오. 이 설정은 모든 검색을 강제로 해싱합니다. INDEX_SCAN, HASH_SCAN에 비해 이점이 없으며 동일한 행에 대한 여러 업데이트가 포함 된 단일 이벤트 또는 순서에 따른 업데이트의 경우 "레코드를 찾을 수 없음"오류 또는 중복 키 오류가 발생할 수 있습니다.
+# -TABLE_SCAN, HASH_SCAN 조합을 사용하지 마십시오. 이 설정은 모든 검색을 강제로 해싱합니다.
+#  INDEX_SCAN, HASH_SCAN에 비해 이점이 없으며 동일한 행에 대한 여러 업데이트가 포함 된 단일 이벤트 또는 순서에 따른 업데이트의 경우 "레코드를 찾을 수 없음"오류 또는 중복 키 오류가 발생할 수 있습니다.
 # 
 # 알고리즘이 목록에 지정된 순서는 SELECT 또는 SHOW VARIABLES 문에 의해 표시되는 순서와 차이가 없습니다.
 # 
@@ -4691,7 +4777,9 @@
 # Maximum Value : (64-bit platforms) - 18446744073709551615
 # Maximum Value : (32-bit platforms) - 4294967295
 # 
-# 복제 슬레이브 SQL 스레드가 InnoDB 교착 상태로 인해 트랜잭션을 실행하지 못하거나 트랜잭션의 실행 시간이 InnoDB의 innodb_lock_wait_timeout 또는 NDB의 TransactionDeadlockDetectionTimeout 또는 TransactionInactiveTimeout을 초과하여 트랜잭션을 실행하지 못하면 오류가 발생하기 전에 slave_transaction_retries 시간을 자동으로 재 시도합니다. 일시적이지 않은 오류가있는 트랜잭션은 재 시도되지 않습니다.
+# 복제 슬레이브 SQL 스레드가 InnoDB 교착 상태로 인해 트랜잭션을 실행하지 못하거나 트랜잭션의 실행 시간이 InnoDB의 innodb_lock_wait_timeout 또는 NDB의 TransactionDeadlockDetectionTimeout
+# 또는 TransactionInactiveTimeout을 초과하여 트랜잭션을 실행하지 못하면 오류가 발생하기 전에 slave_transaction_retries 시간을 자동으로 재 시도합니다.
+# 일시적이지 않은 오류가 있는 트랜잭션은 재시도되지 않습니다.
 # 
 # slave_transaction_retries의 기본값은 10입니다. 변수를 0으로 설정하면 트랜잭션의 자동 재 시도를 사용하지 않습니다. 변수를 설정하면 실행중인 채널을 포함하여 모든 복제 채널에 즉시 적용됩니다.
 # 
@@ -5095,8 +5183,10 @@
 # 즉, binlog_format의 값이 STATEMENT이거나 binlog_format이 MIXED이고 지정된 명령문이 명령문 기반 형식을 사용하여 복제되는 경우에만 작동합니다.
 # 이 변수는 이진 로그 형식이 ROW이거나 binlog_format이 MIXED로 설정되어 있고 주어진 명령문이 행 기반 형식을 사용하여 복제 된 경우에는 효과가 없습니다.
 # 
-# Important
-# 이 변수를 사용 가능하게하기 전에 트랜잭션 테이블과 비 트랜잭션 테이블 사이에 종속성이 없는지 확인해야합니다. 이러한 종속성의 예로는 INSERT INTO myisam_table SELECT * FROM innodb_table 문이 있습니다. 그렇지 않으면 그러한 진술로 인해 슬레이브가 마스터에서 벗어날 수 있습니다.
+# 중요사항
+# 이 변수를 사용 가능하게하기 전에 트랜잭션 테이블과 비 트랜잭션 테이블 사이에 종속성이 없는지 확인해야합니다.
+# 이러한 종속성의 예로는 INSERT INTO myisam_table SELECT * FROM innodb_table 문이 있습니다.
+# 그렇지 않으면 그러한 진술로 인해 슬레이브가 마스터에서 벗어날 수 있습니다.
 # 
 # 이진 로그 형식이 ROW 또는 MIXED이면이 변수가 적용되지 않습니다.
 #
@@ -5194,15 +5284,20 @@
 # Minimum Value : 0
 # Maximum Value : 1000000
 # 
-# 이진 로그 파일을 디스크에 동기화하기 전에 이진 로그 커밋이 대기하는 시간 (마이크로 초)을 제어합니다. 기본적으로 binlog_group_commit_sync_delay는 0으로 설정되며 이는 지연이 없음을 의미합니다. binlog_group_commit_sync_delay를 마이크로 초 지연으로 설정하면 더 많은 트랜잭션을 한 번에 디스크에 동기화하여 더 큰 그룹이 그룹당 더 적은 시간 단위를 필요로하기 때문에 트랜잭션 그룹을 커밋하는 전체 시간을 줄입니다.
+# 이진 로그 파일을 디스크에 동기화하기 전에 이진 로그 커밋이 대기하는 시간 (마이크로 초)을 제어합니다. 기본적으로 binlog_group_commit_sync_delay는 0으로 설정되며 이는 지연이 없음을 의미합니다.
+# binlog_group_commit_sync_delay를 마이크로 초 지연으로 설정하면 더 많은 트랜잭션을 한 번에 디스크에 동기화하여 더 큰 그룹이 그룹당 더 적은 시간 단위를 필요로하기 때문에 트랜잭션 그룹을 커밋하는 전체 시간을 줄입니다.
 # 
-# sync_binlog = 0 또는 sync_binlog = 1이 설정되면 binlog_group_commit_sync_delay에 의해 지정된 지연이 동기화 전 (또는 진행 전 sync_binlog = 0의 경우)의 모든 이진 로그 커밋 그룹에 적용됩니다. sync_binlog가 1보다 큰 값 n으로 설정되면 n 개의 이진 로그 커밋 그룹마다 지연이 적용됩니다.
+# sync_binlog = 0 또는 sync_binlog = 1이 설정되면 binlog_group_commit_sync_delay에 의해 지정된 지연이 동기화 전 (또는 진행 전 sync_binlog = 0의 경우)의 모든 이진 로그 커밋 그룹에 적용됩니다.
+# sync_binlog가 1보다 큰 값 n으로 설정되면 n 개의 이진 로그 커밋 그룹마다 지연이 적용됩니다.
 # 
-# binlog_group_commit_sync_delay를 설정하면 복제 슬레이브가 있거나 장애 조치 후에있을 수있는 모든 서버에서 병렬 커밋 트랜잭션의 수가 증가하여 복제 슬레이브에서 병렬 실행이 증가 할 수 있습니다. 이 효과의 이점을 얻으려면 슬레이브 서버에 slave_parallel_type = LOGICAL_CLOCK이 설정되어 있어야하며 binlog_transaction_dependency_tracking = COMMIT_ORDER도 설정하면 효과가 더 중요합니다. binlog_group_commit_sync_delay 설정을 조정할 때 마스터 처리량과 슬레이브 처리량을 모두 고려해야합니다.
+# binlog_group_commit_sync_delay를 설정하면 복제 슬레이브가 있거나 장애 조치 후에있을 수있는 모든 서버에서 병렬 커밋 트랜잭션의 수가 증가하여 복제 슬레이브에서 병렬 실행이 증가 할 수 있습니다.
+# 이 효과의 이점을 얻으려면 슬레이브 서버에 slave_parallel_type = LOGICAL_CLOCK이 설정되어 있어야하며 binlog_transaction_dependency_tracking = COMMIT_ORDER도 설정하면 효과가 더 중요합니다.
+# binlog_group_commit_sync_delay 설정을 조정할 때 마스터 처리량과 슬레이브 처리량을 모두 고려해야합니다.
 # 
 # binlog_group_commit_sync_delay를 설정하면 이진 로그가있는 서버 (마스터 또는 슬레이브)의 이진 로그에 대한 fsync () 호출 수를 줄일 수도 있습니다.
 # 
-# binlog_group_commit_sync_delay를 설정하면 서버에서 트랜잭션 대기 시간이 증가하여 클라이언트 응용 프로그램에 영향을 줄 수 있습니다. 또한 동시 작업이 많은 경우 지연이 경합을 증가시켜 처리량을 줄일 수 있습니다. 일반적으로 지연 설정의 이점은 단점보다 중요하지만 최적의 설정을 결정하려면 항상 조정을 수행해야합니다.
+# binlog_group_commit_sync_delay를 설정하면 서버에서 트랜잭션 대기 시간이 증가하여 클라이언트 응용 프로그램에 영향을 줄 수 있습니다.
+# 또한 동시 작업이 많은 경우 지연이 경합을 증가시켜 처리량을 줄일 수 있습니다. 일반적으로 지연 설정의 이점은 단점보다 중요하지만 최적의 설정을 결정하려면 항상 조정을 수행해야합니다.
 #
 # * Apply Option
 # binlog_group_commit_sync_delay=0
@@ -5269,12 +5364,17 @@
 # 
 # MySQL 행 기반 복제의 경우이 변수는 행 이미지가 이진 로그에 기록되는 방식을 결정합니다.
 # 
-# MySQL 행 기반 복제에서 각 행 변경 이벤트에는 업데이트 할 행을 검색 할 때 열이 일치하는 "이전"이미지와 변경 사항이 포함 된 "이후"이미지의 두 이미지가 포함됩니다. 일반적으로 MySQL은 이전 및 이후 이미지 모두에 대해 전체 행 (즉, 모든 열)을 기록합니다. 그러나 두 이미지 모두에 모든 열을 반드시 포함 할 필요는 없으며 실제로 필요한 열만 로깅하여 디스크, 메모리 및 네트워크 사용량을 절약 할 수 있습니다.
+# MySQL 행 기반 복제에서 각 행 변경 이벤트에는 업데이트 할 행을 검색 할 때 열이 일치하는 "이전"이미지와 변경 사항이 포함 된 "이후"이미지의 두 이미지가 포함됩니다.
+# 일반적으로 MySQL은 이전 및 이후 이미지 모두에 대해 전체 행 (즉, 모든 열)을 기록합니다.
+# 그러나 두 이미지 모두에 모든 열을 반드시 포함 할 필요는 없으며 실제로 필요한 열만 로깅하여 디스크, 메모리 및 네트워크 사용량을 절약 할 수 있습니다.
 # 
 # 노트
-# 행을 삭제하면 삭제 후 전파 할 변경된 값이 없으므로 이전 이미지 만 기록됩니다. 행을 삽입 할 때 일치하는 기존 행이 없으므로 이후 이미지 만 기록됩니다. 행을 업데이트 할 때만 사전 및 사후 이미지가 필요하며 둘 다 이진 로그에 기록됩니다.
+# 행을 삭제하면 삭제 후 전파 할 변경된 값이 없으므로 이전 이미지 만 기록됩니다. 행을 삽입 할 때 일치하는 기존 행이 없으므로 이후 이미지 만 기록됩니다.
+# 행을 업데이트 할 때만 사전 및 사후 이미지가 필요하며 둘 다 이진 로그에 기록됩니다.
 # 
-# 이전 이미지의 경우 행을 고유하게 식별하는 데 필요한 최소 열 세트 만 기록하면됩니다. 행을 포함하는 테이블에 기본 키가 있으면 기본 키 열만 이진 로그에 기록됩니다. 그렇지 않으면 테이블에 고유 한 키가 있고 모든 열이 NULL이 아닌 경우 고유 키의 열만 기록하면됩니다. (테이블에 기본 열이나 NULL 열이없는 고유 키가없는 경우 모든 열을 이전 이미지에서 사용하고 기록해야합니다.) 이후 이미지에서는 실제로 변경된 열만 기록해야합니다.
+# 이전 이미지의 경우 행을 고유하게 식별하는 데 필요한 최소 열 세트 만 기록하면됩니다. 행을 포함하는 테이블에 기본 키가 있으면 기본 키 열만 이진 로그에 기록됩니다.
+# 그렇지 않으면 테이블에 고유 한 키가 있고 모든 열이 NULL이 아닌 경우 고유 키의 열만 기록하면됩니다. (테이블에 기본 열이나 NULL 열이없는 고유 키가없는 경우 모든 열을 이전 이미지에서 사용하고 기록해야합니다.)
+# 이후 이미지에서는 실제로 변경된 열만 기록해야합니다.
 # 
 # binlog_row_image 시스템 변수를 사용하여 서버가 전체 또는 최소 행을 기록하도록 할 수 있습니다. 이 변수는 실제로 다음 목록에 표시된 것처럼 세 가지 가능한 값 중 하나를 사용합니다.
 # + 전체 : 이전 이미지와 이후 이미지 모두에 모든 열을 기록합니다.
@@ -5338,7 +5438,10 @@
 # Maximum Value : (64-bit platforms) - 18446744073709551615
 # Maximum Value : (32-bit platforms) - 4294967295
 # 
-# 이 변수는 트랜잭션 중에 발행 된 비 트랜잭션 명령문을 보유하기 위해 2 진 로그의 캐시 크기를 결정합니다. 서버가 트랜잭션 저장 엔진을 지원하고 서버에서 이진 로그가 활성화 된 경우 (--log-bin 옵션) 각 클라이언트에 대해 별도의 이진 로그 트랜잭션 및 명령문 캐시가 할당됩니다. 트랜잭션 중에 큰 비 트랜잭션 문을 자주 사용하는 경우이 캐시 크기를 늘려 성능을 향상시킬 수 있습니다. Binlog_stmt_cache_use 및 Binlog_stmt_cache_disk_use 상태 변수는이 변수의 크기를 조정하는 데 유용 할 수 있습니다. 5.4.4 절.“이진 로그”를 참조하십시오.
+# 이 변수는 트랜잭션 중에 발행 된 비 트랜잭션 명령문을 보유하기 위해 2 진 로그의 캐시 크기를 결정합니다.
+# 서버가 트랜잭션 저장 엔진을 지원하고 서버에서 이진 로그가 활성화 된 경우 (--log-bin 옵션) 각 클라이언트에 대해 별도의 이진 로그 트랜잭션 및 명령문 캐시가 할당됩니다.
+# 트랜잭션 중에 큰 비 트랜잭션 문을 자주 사용하는 경우이 캐시 크기를 늘려 성능을 향상시킬 수 있습니다.
+# Binlog_stmt_cache_use 및 Binlog_stmt_cache_disk_use 상태 변수는이 변수의 크기를 조정하는 데 유용 할 수 있습니다. 5.4.4 절.“이진 로그”를 참조하십시오.
 # 
 # binlog_cache_size 시스템 변수는 트랜잭션 캐시의 크기를 설정합니다.
 #
@@ -5394,6 +5497,25 @@
 #
 # * Apply Option
 # binlog_transaction_dependency_history_size=25000
+# 
+# --------------------------------------------
+# 
+# binlogging_impossible_mode
+# 
+# Command-Line Format : --binlogging-impossible-mode[=value]
+# Introduced : 5.6.20
+# Deprecated : 5.6.22
+# System Variable : binlogging_impossible_mode
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Enumeration
+# Default Value : IGNORE_ERROR
+# Valid Values : IGNORE_ERROR, ABORT_SERVER
+# 
+# 이 옵션은 더 이상 사용되지 않습니다. 향후 MySQL 릴리스에서 제거 될 것으로 예상됩니다. binlog_error_action 변수를 사용하여 서버가 바이너리 로그에 쓸 수 없을 때 발생하는 상황을 제어합니다.
+#
+# * Apply Option
+# binlogging_impossible_mode=IGNORE_ERROR
 # 
 # --------------------------------------------
 # 
@@ -5671,16 +5793,22 @@
 # Maximum Value : 4294967295
 # 
 # MySQL 서버가 바이너리 로그를 디스크와 동기화하는 빈도를 제어합니다.
-# + sync_binlog = 0 : MySQL 서버에 의한 이진 로그의 디스크 동기화를 비활성화합니다. 대신, MySQL 서버는 운영 체제에 의존하여 다른 파일에서와 같이 이진 로그를 때때로 디스크로 플러시합니다. 이 설정은 최상의 성능을 제공하지만 정전 또는 운영 체제 충돌시 서버가 이진 로그에 동기화되지 않은 트랜잭션을 커밋했을 수 있습니다.
-# + sync_binlog = 1 : 트랜잭션이 커밋되기 전에 이진 로그를 디스크에 동기화합니다. 이것은 가장 안전한 설정이지만 증가 된 디스크 쓰기 수로 인해 성능에 부정적인 영향을 줄 수 있습니다. 정전 또는 운영 체제 충돌이 발생하면 이진 로그에서 누락 된 트랜잭션은 준비된 상태 일뿐입니다. 이를 통해 자동 복구 루틴이 트랜잭션을 롤백 할 수 있으므로 2 진 로그에서 트랜잭션이 유실되지 않습니다.
-# + sync_binlog = N. 여기서 N은 0 또는 1 이외의 값입니다. 이진 로그는 N 이진 로그 커밋 그룹이 수집 된 후 디스크에 동기화됩니다. 정전 또는 운영 체제 충돌이 발생하면 서버가 이진 로그로 플러시되지 않은 트랜잭션을 커밋했을 수 있습니다. 이 설정은 증가 된 디스크 쓰기 수로 인해 성능에 부정적인 영향을 줄 수 있습니다. 값이 클수록 성능이 향상되지만 데이터 손실 위험이 높아집니다.
+# + sync_binlog = 0 : MySQL 서버에 의한 이진 로그의 디스크 동기화를 비활성화합니다. 대신, MySQL 서버는 운영 체제에 의존하여 다른 파일에서와 같이 이진 로그를 때때로 디스크로 플러시합니다.
+# 이 설정은 최상의 성능을 제공하지만 정전 또는 운영 체제 충돌시 서버가 이진 로그에 동기화되지 않은 트랜잭션을 커밋했을 수 있습니다.
+# + sync_binlog = 1 : 트랜잭션이 커밋되기 전에 이진 로그를 디스크에 동기화합니다. 이것은 가장 안전한 설정이지만 증가 된 디스크 쓰기 수로 인해 성능에 부정적인 영향을 줄 수 있습니다.
+# 정전 또는 운영 체제 충돌이 발생하면 이진 로그에서 누락 된 트랜잭션은 준비된 상태 일뿐입니다. 이를 통해 자동 복구 루틴이 트랜잭션을 롤백 할 수 있으므로 2 진 로그에서 트랜잭션이 유실되지 않습니다.
+# + sync_binlog = N. 여기서 N은 0 또는 1 이외의 값입니다. 이진 로그는 N 이진 로그 커밋 그룹이 수집 된 후 디스크에 동기화됩니다.
+# 정전 또는 운영 체제 충돌이 발생하면 서버가 이진 로그로 플러시되지 않은 트랜잭션을 커밋했을 수 있습니다. 이 설정은 증가 된 디스크 쓰기 수로 인해 성능에 부정적인 영향을 줄 수 있습니다.
+# 값이 클수록 성능이 향상되지만 데이터 손실 위험이 높아집니다.
 # 
 # 트랜잭션과 함께 InnoDB를 사용하는 복제 설정에서 최대한의 내구성과 일관성을 유지하려면 다음 설정을 사용하십시오.
 # + sync_binlog = 1.
 # + innodb_flush_log_at_trx_commit = 1.
 # 
 # 주의
-# 많은 운영 체제와 일부 디스크 하드웨어는 디스크 비우기 작업을 속입니다. 그들은 플러시가 발생하지 않았지만 mysqld에게 플러시가 발생했다고 말할 수 있습니다. 이 경우 권장 설정으로도 트랜잭션의 내구성을 보장 할 수 없으며 최악의 경우 정전으로 인해 InnoDB 데이터가 손상 될 수 있습니다. SCSI 디스크 컨트롤러 나 디스크 자체에서 배터리 백업 디스크 캐시를 사용하면 파일 플러시 속도가 빨라지고 작업이 더 안전 해집니다. 하드웨어 캐시에서 디스크 쓰기 캐싱을 비활성화 할 수도 있습니다.
+# 많은 운영 체제와 일부 디스크 하드웨어는 디스크 비우기 작업을 속입니다. 그들은 플러시가 발생하지 않았지만 mysqld에게 플러시가 발생했다고 말할 수 있습니다.
+# 이 경우 권장 설정으로도 트랜잭션의 내구성을 보장 할 수 없으며 최악의 경우 정전으로 인해 InnoDB 데이터가 손상 될 수 있습니다.
+# SCSI 디스크 컨트롤러 나 디스크 자체에서 배터리 백업 디스크 캐시를 사용하면 파일 플러시 속도가 빨라지고 작업이 더 안전 해집니다. 하드웨어 캐시에서 디스크 쓰기 캐싱을 비활성화 할 수도 있습니다.
 #
 # * Apply Option
 # sync_binlog=1
@@ -5738,8 +5866,12 @@
 # 이 파일이 제거되기 전에 서버가 다시 시작되면 binlog_gtid_simple_recovery = FALSE를 설정해야합니다.
 # 
 # binlog_gtid_simple_recovery = FALSE가 설정되면 gtid_purged 시스템 변수에 설명 된대로 gtid_executed 및 gtid_purged를 계산하는 방법이 다음과 같이 2 진 로그 파일을 반복하도록 변경됩니다.
-# + 최신 이진 로그 파일에서 Previous_gtids_log_event 및 GTID 로그 이벤트 값을 사용하는 대신 gtid_executed에 대한 계산은 최신 이진 로그 파일에서 반복되며 Previous_gtids_log_event 값과 첫 번째 이진 로그 파일의 모든 GTID 로그 이벤트를 사용합니다. Previous_gtids_log_event 값을 찾습니다. 서버의 최신 이진 로그 파일에 GTID 로그 이벤트가없는 경우 (예 : gtid_mode = ON이 사용되었지만 나중에 서버가 gtid_mode = OFF로 변경된 경우)이 프로세스는 시간이 오래 걸릴 수 있습니다.
-# + 가장 오래된 이진 로그 파일에서 Previous_gtids_log_event의 값을 사용하는 대신 gtid_purged 계산은 가장 오래된 이진 로그 파일에서 반복되고 비어 있지 않은 Previous_gtids_log_event 값 또는 찾은 첫 번째 이진 로그 파일의 Previous_gtids_log_event 값을 사용합니다. 최소한 하나의 GTID 로그 이벤트 (GTID 사용이 해당 시점에서 시작됨을 나타냄). 서버의 이전 2 진 로그 파일에 GTID 로그 이벤트가없는 경우 (예 : gtid_mode = ON이 서버에서 최근에 설정된 경우),이 프로세스는 시간이 오래 걸릴 수 있습니다.
+# + 최신 이진 로그 파일에서 Previous_gtids_log_event 및 GTID 로그 이벤트 값을 사용하는 대신 gtid_executed에 대한 계산은 최신 이진 로그 파일에서 반복되며
+#   Previous_gtids_log_event 값과 첫 번째 이진 로그 파일의 모든 GTID 로그 이벤트를 사용합니다. Previous_gtids_log_event 값을 찾습니다.
+#   서버의 최신 이진 로그 파일에 GTID 로그 이벤트가없는 경우 (예 : gtid_mode = ON이 사용되었지만 나중에 서버가 gtid_mode = OFF로 변경된 경우)이 프로세스는 시간이 오래 걸릴 수 있습니다.
+# + 가장 오래된 이진 로그 파일에서 Previous_gtids_log_event의 값을 사용하는 대신 gtid_purged 계산은 가장 오래된 이진 로그 파일에서 반복되고 비어 있지 않은
+#   Previous_gtids_log_event 값 또는 찾은 첫 번째 이진 로그 파일의 Previous_gtids_log_event 값을 사용합니다. 최소한 하나의 GTID 로그 이벤트 (GTID 사용이 해당 시점에서 시작됨을 나타냄).
+#   서버의 이전 2 진 로그 파일에 GTID 로그 이벤트가없는 경우 (예 : gtid_mode = ON이 서버에서 최근에 설정된 경우),이 프로세스는 시간이 오래 걸릴 수 있습니다.
 # 
 # MySQL 버전 5.7.5에서는이 변수가 단순화 _binlog_gtid_recovery로 추가되었고 MySQL 버전 5.7.6에서는 binlog_gtid_simple_recovery로 이름이 변경되었습니다.
 #
@@ -5776,9 +5908,12 @@
 # 
 # 자세한 내용은 16.1.3.6 절“GTID를 사용한 복제 제한 사항”을 참조하십시오.
 # 
-# MySQL 5.7.6 이전에는 boolean enforce_gtid_consistency의 기본값이 OFF였습니다. 이전 릴리스와의 호환성을 유지하기 위해 MySQL 5.7.6에서는 열거의 기본값이 OFF로 설정되고 값없이 --enforce-gtid-consistency를 설정하면 값을 ON으로 설정하는 것으로 해석됩니다. 변수에는 0 = OFF = FALSE, 1 = ON = TRUE, 2 = WARN 값에 대한 여러 텍스트 별칭이 있습니다.
+# MySQL 5.7.6 이전에는 boolean enforce_gtid_consistency의 기본값이 OFF였습니다. 이전 릴리스와의 호환성을 유지하기 위해 MySQL 5.7.6에서는 열거의 기본값이 OFF로 설정되고
+# 값없이 --enforce-gtid-consistency를 설정하면 값을 ON으로 설정하는 것으로 해석됩니다. 변수에는 0 = OFF = FALSE, 1 = ON = TRUE, 2 = WARN 값에 대한 여러 텍스트 별칭이 있습니다.
 # 이것은 다른 열거 유형과 다르지만 이전 버전에서 사용 된 부울 유형과의 호환성을 유지합니다. 이러한 변경 사항은 변수가 반환하는 내용에 영향을줍니다.
-# SELECT @@ ENFORCE_GTID_CONSISTENCY를 사용하여 'ENFORCE_GTID_CONSISTENCY'와 같은 변수를 표시하고 SELECT * FROM INFORMATION_SCHEMA.VARIABLES WHERE 'VARIABLE_NAME'= 'ENFORCE_GTID_CONSISTENCY'와 같은 SELECT 변수는 모두 숫자 형식이 아닌 텍스트 형식을 반환합니다. @@ ENFORCE_GTID_CONSISTENCY는 부울의 숫자 형식을 반환하지만 SHOW 및 정보 스키마의 텍스트 형식을 반환하므로 호환되지 않는 변경 사항입니다.
+# SELECT @@ ENFORCE_GTID_CONSISTENCY를 사용하여 'ENFORCE_GTID_CONSISTENCY'와 같은 변수를 표시하고
+# SELECT * FROM INFORMATION_SCHEMA.VARIABLES WHERE 'VARIABLE_NAME'= 'ENFORCE_GTID_CONSISTENCY'와 같은 SELECT 변수는 모두 숫자 형식이 아닌 텍스트 형식을 반환합니다.
+# @@ENFORCE_GTID_CONSISTENCY는 부울의 숫자 형식을 반환하지만 SHOW 및 정보 스키마의 텍스트 형식을 반환하므로 호환되지 않는 변경 사항입니다.
 #
 # * Apply Option
 # enforce_gtid_consistency=OFF
@@ -5896,9 +6031,13 @@
 # 
 # 이 변수가 UUID : NUMBER로 설정되고 트랜잭션이 커미트 또는 롤백 된 후 다른 명령문보다 먼저 명시적인 SET GTID_NEXT 문을 발행해야합니다.
 # 
-# MySQL 5.7.5 이상에서 DROP TABLE 또는 DROP TEMPORARY TABLE은 임시 테이블이있는 비 임시 테이블 또는 트랜잭션이없는 스토리지 엔진을 사용하는 임시 테이블이있는 트랜잭션 스토리지 엔진을 사용하는 임시 테이블의 조합에서 사용될 때 명시적인 오류와 함께 실패합니다. MySQL 5.7.5 이전에는 GTID가 활성화되었지만 gtid_next가 AUTOMATIC이 아닌 경우 이러한 테이블 조합 중 하나와 함께 사용될 때 DROP TABLE이 올바르게 작동하지 않았습니다. (버그 # 17620053)
+# MySQL 5.7.5 이상에서 DROP TABLE 또는 DROP TEMPORARY TABLE은 임시 테이블이있는 비 임시 테이블 또는 트랜잭션이없는 스토리지 엔진을 사용하는 임시 테이블이있는
+# 트랜잭션 스토리지 엔진을 사용하는 임시 테이블의 조합에서 사용될 때 명시적인 오류와 함께 실패합니다. MySQL 5.7.5 이전에는 GTID가 활성화되었지만 gtid_next가 AUTOMATIC이 아닌 경우
+# 이러한 테이블 조합 중 하나와 함께 사용될 때 DROP TABLE이 올바르게 작동하지 않았습니다. (버그 # 17620053)
 # 
-# MySQL 5.7.1에서는 CHANGE MASTER TO, START SLAVE, STOP SLAVE, REPAIR TABLE, OPTIMIZE TABLE, ANALYZE TABLE, CHECK TABLE, CREATE SERVER, ALTER SERVER, DROP SERVER, CACHE INDEX, LOAD INDEX INTO 문을 실행할 수 없습니다. gtid_next가 AUTOMATIC 이외의 값으로 설정된 경우 CACHE, FLUSH 또는 RESET; 이러한 경우 명령문이 오류와 함께 실패합니다. 이러한 진술은 MySQL 5.7.2 이상에서 허용되지 않습니다. (버그 # 16062608, 버그 # 16715809, 버그 # 69045) (버그 # 16062608)
+# MySQL 5.7.1에서는 CHANGE MASTER TO, START SLAVE, STOP SLAVE, REPAIR TABLE, OPTIMIZE TABLE, ANALYZE TABLE, CHECK TABLE, CREATE SERVER,
+# ALTER SERVER, DROP SERVER, CACHE INDEX, LOAD INDEX INTO 문을 실행할 수 없습니다. gtid_next가 AUTOMATIC 이외의 값으로 설정된 경우 CACHE, FLUSH 또는 RESET; 이러한 경우 명령문이 오류와 함께 실패합니다.
+# 이러한 진술은 MySQL 5.7.2 이상에서 허용되지 않습니다. (버그 # 16062608, 버그 # 16715809, 버그 # 69045) (버그 # 16062608)
 #
 # * Apply Option
 # gtid_next=AUTOMATIC
@@ -5915,12 +6054,15 @@
 # 
 # 이 읽기 전용 변수는 주로 내부 용입니다. 내용은 범위에 따라 다릅니다.
 # 
-# 전역 범위와 함께 사용되는 경우 gtid_owned는 현재 서버에서 사용중인 모든 GTID 목록을 소유하고있는 스레드 ID를 보유합니다. 이 변수는 주로 다중 스레드 복제 슬레이브가 트랜잭션이 다른 스레드에 적용되고 있는지 확인하는 데 유용합니다. Applier 스레드는 트랜잭션을 처리 할 때마다 트랜잭션의 GTID 소유권을 가져 오므로 @@ global.gtid_owned는 처리 기간 동안 GTID와 소유자를 표시합니다. 트랜잭션이 커밋되거나 롤백되면 Applier 스레드가 GTID의 소유권을 해제합니다.
+# 전역 범위와 함께 사용되는 경우 gtid_owned는 현재 서버에서 사용중인 모든 GTID 목록을 소유하고있는 스레드 ID를 보유합니다.
+# 이 변수는 주로 다중 스레드 복제 슬레이브가 트랜잭션이 다른 스레드에 적용되고 있는지 확인하는 데 유용합니다.
+# Applier 스레드는 트랜잭션을 처리 할 때마다 트랜잭션의 GTID 소유권을 가져 오므로 @@ global.gtid_owned는 처리 기간 동안 GTID와 소유자를 표시합니다. 트랜잭션이 커밋되거나 롤백되면 Applier 스레드가 GTID의 소유권을 해제합니다.
 # 
 # 세션 범위와 함께 사용될 때 gtid_owned는 현재이 세션에서 사용 중이고 소유 한 단일 GTID를 보유합니다.
 # 이 변수는 클라이언트가 gtid_next를 설정하여 트랜잭션에 대한 GTID를 명시 적으로 할당 한 경우 GTID 사용을 테스트하고 디버깅하는 데 주로 유용합니다.
 # 이 경우 @@ session.gtid_owned는 트랜잭션이 커밋되거나 롤백 될 때까지 클라이언트가 트랜잭션을 처리 할 때마다 GTID를 표시합니다.
-# 클라이언트가 트랜잭션 처리를 마치면 변수가 지워집니다. 세션에 gtid_next = AUTOMATIC을 사용하는 경우 gtid_owned는 트랜잭션에 대한 커밋 명령문을 실행하는 동안 잠깐만 채워 지므로 @@ global.gtid_owned를 읽을 경우 나열 될지라도 해당 세션에서 볼 수는 없습니다. 올바른 지점. 세션에서 클라이언트가 처리하는 GTID를 추적해야하는 경우 session_track_gtids 시스템 변수로 제어되는 세션 상태 추적기를 사용할 수 있습니다.
+# 클라이언트가 트랜잭션 처리를 마치면 변수가 지워집니다. 세션에 gtid_next = AUTOMATIC을 사용하는 경우 gtid_owned는 트랜잭션에 대한 커밋 명령문을 실행하는 동안 잠깐만 채워 지므로
+# @@global.gtid_owned를 읽을 경우 나열 될지라도 해당 세션에서 볼 수는 없습니다. 올바른 지점. 세션에서 클라이언트가 처리하는 GTID를 추적해야하는 경우 session_track_gtids 시스템 변수로 제어되는 세션 상태 추적기를 사용할 수 있습니다.
 #
 # * Apply Option
 # gtid_owned=none
@@ -5935,25 +6077,30 @@
 # Dynamic : Yes
 # Type : String
 # 
-# gtid_purged 시스템 변수 (@@ GLOBAL.gtid_purged)의 전역 값은 서버에서 커밋되었지만 서버의 이진 로그 파일에 존재하지 않는 모든 트랜잭션의 GTID로 구성된 GTID 세트입니다. gtid_purged는 gtid_executed의 서브 세트입니다. gtid_purged에는 다음과 같은 GTID 범주가 있습니다.
+# gtid_purged 시스템 변수 (@@ GLOBAL.gtid_purged)의 전역 값은 서버에서 커밋되었지만 서버의 이진 로그 파일에 존재하지 않는 모든 트랜잭션의 GTID로 구성된 GTID 세트입니다.
+# gtid_purged는 gtid_executed의 서브 세트입니다. gtid_purged에는 다음과 같은 GTID 범주가 있습니다.
 # + 슬레이브에서 바이너리 로깅이 비활성화 된 상태에서 커밋 된 복제 된 트랜잭션의 GTID
 # + 이제 제거 된 이진 로그 파일에 기록 된 트랜잭션의 GTID
 # + SET @@ GLOBAL.gtid_purged 문에 의해 세트에 명시 적으로 추가 된 GTID.
 # 
 # 서버가 시작되거나 다시 시작되면 gtid_purged의 전역 값이 GTID 세트로 초기화됩니다.
-# 이 GTID 세트가 계산되는 방법에 대한 정보는 gtid_purged 시스템 변수를 참조하십시오. MySQL 5.7.7 이전의 이진 로그가 서버에있는 경우 서버 구성 파일에서 binlog_gtid_simple_recovery = FALSE를 설정하여 올바른 계산을 수행해야 할 수 있습니다.
+# 이 GTID 세트가 계산되는 방법에 대한 정보는 gtid_purged 시스템 변수를 참조하십시오.
+# MySQL 5.7.7 이전의 이진 로그가 서버에있는 경우 서버 구성 파일에서 binlog_gtid_simple_recovery = FALSE를 설정하여 올바른 계산을 수행해야 할 수 있습니다.
 # 이 설정이 필요한 상황에 대한 자세한 내용은 binlog_gtid_simple_recovery에 대한 설명을 참조하십시오.
 # 
 # RESET MASTER를 실행하면 gtid_purged의 값이 빈 문자열로 재설정됩니다.
 # 
-# 서버의 이진 로그에는 존재하지 않지만 특정 GTID 세트의 트랜잭션이 적용된 서버에 기록하기 위해 gtid_purged의 값을 설정할 수 있습니다. 이 조치의 사용 사례는 서버에서 하나 이상의 데이터베이스 백업을 복원하지만 서버에서 트랜잭션을 포함하는 관련 2 진 로그가없는 경우입니다.
+# 서버의 이진 로그에는 존재하지 않지만 특정 GTID 세트의 트랜잭션이 적용된 서버에 기록하기 위해 gtid_purged의 값을 설정할 수 있습니다.
+# 이 조치의 사용 사례는 서버에서 하나 이상의 데이터베이스 백업을 복원하지만 서버에서 트랜잭션을 포함하는 관련 2 진 로그가없는 경우입니다.
 # 
-# MySQL 5.7에서는 gtid_executed가 빈 문자열 인 경우에만 gtid_purged의 값을 업데이트 할 수 있으므로 gtid_purged는 빈 문자열입니다. 복제가 이전에 시작되지 않았거나 복제가 이전에 GTID를 사용하지 않은 경우입니다. MySQL 5.7.6 이전에는 gtid_purged는 gtid_mode = ON 인 경우에만 설정할 수있었습니다. MySQL 5.7.6 이상에서 gtid_purged는 gtid_mode의 값에 관계없이 설정할 수 있습니다.
+# MySQL 5.7에서는 gtid_executed가 빈 문자열 인 경우에만 gtid_purged의 값을 업데이트 할 수 있으므로 gtid_purged는 빈 문자열입니다.
+# 복제가 이전에 시작되지 않았거나 복제가 이전에 GTID를 사용하지 않은 경우입니다. MySQL 5.7.6 이전에는 gtid_purged는 gtid_mode = ON 인 경우에만 설정할 수있었습니다.
+# MySQL 5.7.6 이상에서 gtid_purged는 gtid_mode의 값에 관계없이 설정할 수 있습니다.
 # 
 # gtid_purged의 값을 지정된 GTID 세트로 바꾸려면 다음 명령문을 사용하십시오.
 # SET @@GLOBAL.gtid_purged = 'gtid_set'
 # 
-# Note
+# 참고사항
 # MySQL 5.7.7 또는 이전 버전을 사용하는 경우 SET @@ GLOBAL.gtid_purged 문을 실행 한 후 서버를 다시 시작하기 전에 서버의 구성 파일에서 binlog_gtid_simple_recovery = FALSE를 설정해야합니다.
 # 그렇지 않으면 gtid_purged가 잘못 계산 될 수 있습니다. 이 설정이 필요한 상황에 대한 자세한 내용은 binlog_gtid_simple_recovery에 대한 설명을 참조하십시오.
 # 서버의 모든 이진 로그가 MySQL 5.7.8 이상을 사용하여 생성되었고 MySQL 5.7.8 이상을 사용하는 경우 binlog_gtid_simple_recovery = TRUE (MySQL 5.7.7의 기본 설정)는 항상 안전하게 사용할 수 있습니다.
