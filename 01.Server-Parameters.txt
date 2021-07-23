@@ -310,8 +310,33 @@
 # 
 # 새 연결의 기본값은 OFF (메모리 내 임시 테이블 사용)입니다.
 # 일반적으로 서버가 작은 임시 테이블의 메모리를 사용하고 필요에 따라 디스크 기반 테이블로 전환하여 큰 결과 세트를 자동으로 처리 할 수 ​​있으므로이 변수를 사용하지 않아도됩니다.
+#
 # * Apply Option
 # big_tables=OFF
+# 
+# --------------------------------------------
+# 
+# @ bulk_insert_buffer_size
+# 
+# Command-Line Format : --bulk-insert-buffer-size=#
+# System Variable : bulk_insert_buffer_size
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Integer
+# Default Value : bulk_insert_buffer_size
+# Minimum Value : 0
+# Maximum Value (64-bit platforms) : 18446744073709551615
+# Maximum Value (32-bit platforms) : 4294967295
+# 
+# 
+# MyISAM uses a special tree-like cache to make bulk inserts faster for INSERT ... SELECT, INSERT ... VALUES (...), (...), ..., and LOAD DATA when adding data to nonempty # tables. This variable limits the size of the cache tree in bytes per thread. Setting it to 0 disables this optimization. The default value is 8MB.
+# 
+# MyISAM은 특별한 트리형 캐시를 사용하여 비어 있지 않은 테이블에 데이터를 추가 할 때
+# INSERT ... SELECT, INSERT ... VALUES (...), (...), ... 및 LOAD DATA에 대한 대량 삽입을 더 빠르게 수행합니다.
+# 이 변수는 스레드당 바이트 단위로 캐시 트리의 크기를 제한합니다. 0으로 설정하면이 최적화가 비활성화됩니다. 기본값은 8MB입니다.
+# 
+# * Apply Option
+# bulk_insert_buffer_size=bulk_insert_buffer_size
 # 
 # --------------------------------------------
 # 
@@ -366,6 +391,34 @@
 # 그러나 서버를 :: 1로 바인딩하면 해당 주소에서만 연결을 허용합니다. 이 경우 먼저 mysql.user 테이블에 'root'@ ':: 1'계정이 있는지 확인하여 서버에 계속 연결하여 종료 할 수 있습니다.
 # 
 # 이 변수는 임베디드 서버 (libmysqld)에 영향을 미치지 않으며 임베디드 서버 내에서 보이지 않습니다.
+#
+# * Apply Option
+# bind_address=*
+# 
+# --------------------------------------------
+# 
+# @ block_encryption_mode
+# 
+# Command-Line Format : --block-encryption-mode=#
+# System Variable : block_encryption_mode
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : String
+# Default Value : aes-128-ecb
+# 
+# 이 변수는 AES와 같은 블록 기반 알고리즘에 대한 블록 암호화 모드를 제어합니다. AES_ENCRYPT() 및 AES_DECRYPT()의 암호화에 영향을줍니다.
+# 
+# block_encryption_mode는 aes-keylen-mode 형식의 값을 취합니다. 여기서 keylen은 비트 단위의 키 길이이고 mode는 암호화 모드입니다.
+# 값은 대소 문자를 구분하지 않습니다. 허용되는 keylen 값은 128, 192 및 # 256입니다. 허용되는 암호화 모드는 MySQL이 OpenSSL 또는 yaSSL을 사용하여 컴파일되었는지 여부에 따라 다릅니다.
+# 
+# OpenSSL의 경우 허용되는 모드 값은 ECB, CBC, CFB1, CFB8, CFB128, OFB입니다.
+# 
+# yaSSL의 경우 허용되는 모드 값은 ECB, CBC입니다.
+# 
+# 예를 들어, 다음 명령문은 AES 암호화 함수가 256 비트의 키 길이와 CBC 모드를 사용하도록합니다.
+# 
+# SET block_encryption_mode = 'aes-256-cbc';
+# block_encryption_mode를 지원되지 않는 키 길이를 포함하는 값 또는 SSL 라이브러리가 지원하지 않는 모드로 설정하려고하면 오류가 발생합니다.
 #
 # * Apply Option
 # bind_address=*
@@ -5162,6 +5215,31 @@
 # 
 # --------------------------------------------
 # 
+# @ binlog_checksum
+# 
+# Command-Line Format : --binlog-checksum=name
+# System Variable : binlog_checksum
+# Scope : Global
+# Dynamic : Yes
+# Type : String
+# Default Value : CRC32
+# Valid Values : NONE, CRC32
+# 
+# 이 변수를 사용하면 소스가 바이너리 로그의 각 이벤트에 대한 체크섬을 작성합니다. binlog_checksum은 NONE (비활성화 됨) 및 CRC32 값을 지원합니다.
+# 기본값은 CRC32입니다. 트랜잭션 내에서 binlog_checksum의 값을 변경할 # 수 없습니다.
+# 
+# binlog_checksum이 비활성화 된 경우 (값 NONE) 서버는 각 이벤트에 대한 이벤트 길이 (체크섬 아님)를 쓰고 확인하여 완전한 이벤트 만 바이너리 로그에 기록하고 있는지 확인합니다.
+# 
+# 이 변수의 값을 변경하면 바이너리 로그가 회전됩니다. 체크섬은 항상 전체 이진 로그 파일에 기록되고 하나의 일부에만 기록되지 않습니다.
+# 
+# 소스에서이 변수를 복제본이 인식 할 수없는 값으로 설정하면 복제본이 자체 binlog_checksum 값을 NONE으로 설정하고 오류와 함께 복제를 중지합니다
+# (버그 # 13553750, 버그 # 61096) 이전 복제본과의 하위 호환성이 우려되는 # 경우 값을 명시 적으로 NONE으로 설정할 수 있습니다.
+# 
+# * Apply Option
+# binlog_checksum=CRC32
+# 
+# --------------------------------------------
+# 
 # @ binlog_direct_non_transactional_updates
 # 
 # Property : Value
@@ -5321,6 +5399,28 @@
 # * Apply Option
 # binlog_group_commit_sync_no_delay_count=0
 # 
+# --------------------------------------------#
+#
+# @ binlog_max_flush_queue_time
+#
+# Command-Line Format : --binlog-max-flush-queue-time=#
+# Deprecated : Yes
+# System Variable : binlog_max_flush_queue_time
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 0
+# Minimum Value : 0
+# Maximum Value : 100000# 
+#
+# 이전에는 그룹 커밋을 진행하기 전에 플러시 큐에서 트랜잭션을 계속 읽는 시간을 마이크로 초 단위로 제어했습니다. MySQL 5.7에서는이 변수가 더 이상 효과가 없습니다.# 
+#
+# binlog_max_flush_queue_time은 MySQL 5.7.9부터 더 이상 사용되지 않으며 향후 MySQL 릴리스에서 최종 제거되도록 표시됩니다.# 
+#
+# * Apply Option
+# binlog_max_flush_queue_time=0
+# 
+
 # --------------------------------------------
 # 
 # @ binlog_order_commits
