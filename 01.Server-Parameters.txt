@@ -528,6 +528,119 @@
 # 
 # --------------------------------------------
 # 
+# @ default_week_format
+# 
+# Command-Line Format : --default-week-format=#
+# System Variable : default_week_format
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Integer
+# Default Value	0
+# Minimum Value	0
+# Maximum Value	7
+# 
+# WEEK () 함수에 사용할 기본 모드 값입니다. Section 12.7,“날짜 및 시간 함수”를 참조하십시오.
+# 
+# * Apply Option
+# default_week_format=0
+# 
+# --------------------------------------------
+# 
+# @ delayed_insert_limit
+# 
+# Command-Line Format : --delayed-insert-limit=#
+# Deprecated : Yes
+# System Variable : delayed_insert_limit
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 100
+# Minimum Value : 1
+# Maximum Value (64-bit platforms) : 18446744073709551615
+# Maximum Value (32-bit platforms) : 4294967295
+# 
+# 
+# 이 시스템 변수는 더 이상 사용되지 않습니다 (DELAYED 삽입이 지원되지 않기 때문). 향후 릴리스에서 제거 될 예정입니다.
+# 
+# * Apply Option
+# delayed_insert_limit=100
+# 
+# --------------------------------------------
+# 
+# @ delayed_insert_timeout
+# 
+# Command-Line Format : --delayed-insert-timeout=#
+# Deprecated : Yes
+# System Variable : delayed_insert_timeout
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 300
+# 
+# 이 시스템 변수는 더 이상 사용되지 않습니다 (DELAYED 삽입이 지원되지 않기 때문). 향후 릴리스에서 제거 될 예정입니다.
+# 
+# * Apply Option
+# delayed_insert_timeout=300
+# 
+# --------------------------------------------
+# 
+# @ delayed_queue_size
+# 
+# Command-Line Format : --delayed-queue-size=#
+# Deprecated : Yes
+# System Variable : delayed_queue_size
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 1000
+# Minimum Value : 1
+# Maximum Value (64-bit platforms) : 18446744073709551615
+# Maximum Value (32-bit platforms) : 4294967295
+# 
+# 이 시스템 변수는 더 이상 사용되지 않습니다 (DELAYED 삽입이 지원되지 않기 때문). 향후 릴리스에서 제거 될 예정입니다.
+# 
+# * Apply Option
+# delayed_queue_size=1000
+# 
+# --------------------------------------------
+# 
+# @ delay_key_write
+# 
+# https://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html#sysvar_bind_address
+# 
+# Command-Line Format : --delay-key-write[={OFF|ON|ALL}]
+# System Variable : delay_key_write
+# Scope : Global
+# Dynamic : Yes
+# Type : Enumeration
+# Default Value : ON
+# Valid Values : ON, OFF, ALL
+# 
+# 이 변수는 지연된 키 쓰기를 사용하는 방법을 지정합니다. MyISAM 테이블에만 적용됩니다. 지연된 키 쓰기는 쓰기 사이에 키 버퍼가 플러시되지 않도록합니다.
+# 15.2.1 절.“MyISAM 시작 옵션”도 참조하십시오.
+# 이 변수는 CREATE TABLE 문에서 사용할 수있는 DELAY_KEY_WRITE 테이블 옵션의 처리에 영향을주는 다음 값 중 하나를 가질 수 있습니다.
+# 
+# 옵션    | 설명
+# OFF    | DELAY_KEY_WRITE는 무시됩니다.
+# ON     | MySQL은 CREATE TABLE 문에 지정된 DELAY_KEY_WRITE 옵션을 따릅니다. 이것이 기본값입니다.
+# ALL    | 새로 열린 모든 테이블은 DELAY_KEY_WRITE 옵션이 활성화 된 상태에서 생성된 것처럼 처리됩니다.
+#
+# 노트
+# 이 변수를 ALL로 설정하면 테이블이 사용 중일 때 다른 프로그램 (예 : 다른 MySQL 서버 또는 myisamchk) 내에서 MyISAM 테이블을 사용해서는 안됩니다.
+# 그렇게하면 인덱스가 손상됩니다.
+# 
+# 테이블에 대해 DELAY_KEY_WRITE가 활성화 된 경우 모든 인덱스 업데이트시 테이블에 대한 키 버퍼가 플러시되지 않고 테이블이 닫힐 때만 플러시됩니다.
+# 이렇게하면 키에 대한 쓰기 속도가 상당히 빨라지지만이 기능을 사용하는 경우 myisam_recover_options 시스템 변수 세트
+# (예 : myisam_recover_options = 'BACKUP, FORCE')로 서버를 시작하여 모든 MyISAM 테이블의 자동 검사를 추가해야합니다.
+# 섹션 5.1.7,“서버 시스템 변수”및 섹션 15.2.1,“MyISAM 시작 옵션”을 참조하십시오.
+# 
+# --skip-new로 mysqld를 시작하면 delay_key_write가 OFF로 설정됩니다.
+# 
+# 경고
+# --external-locking을 사용하여 외부 잠금을 활성화하면 지연된 키 쓰기를 사용하는 테이블에 대한 인덱스 손상에 대한 보호가 없습니다.
+#  
+# --------------------------------------------
+# 
 # @ event_scheduler :
 # 
 # Property : Value
