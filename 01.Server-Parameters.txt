@@ -546,6 +546,42 @@
 # 
 # --------------------------------------------
 # 
+# @ delay_key_write
+# 
+# Command-Line Format : --delay-key-write[={OFF|ON|ALL}]
+# System Variable : delay_key_write
+# Scope : Global
+# Dynamic : Yes
+# Type : Enumeration
+# Default Value : ON
+# Valid Values : ON, OFF, ALL
+# 
+# 이 변수는 지연된 키 쓰기를 사용하는 방법을 지정합니다. MyISAM 테이블에만 적용됩니다.
+# 지연된 키 쓰기는 쓰기 사이에 키 버퍼가 플러시되지 않도록합니다. 15.2.1 절.“MyISAM 시작 옵션”도 참조하십시오.
+# 
+# 이 변수는 CREATE TABLE 문에서 사용할 수있는 DELAY_KEY_WRITE 테이블 옵션의 처리에 영향을주는 다음값중 하나를 가질 수 있습니다.
+# 
+# 옵션 설명
+# OFF DELAY_KEY_WRITE는 무시됩니다.
+# ON MySQL은 CREATE TABLE 문에 지정된 DELAY_KEY_WRITE 옵션을 따릅니다. 이것이 기본값입니다.
+# ALL 새로 열린 모든 테이블은 DELAY_KEY_WRITE 옵션이 활성화 된 상태에서 생성 된 것처럼 처리됩니다.
+# 노트
+# 이 변수를 ALL로 설정하면 테이블이 사용 중일 때 다른 프로그램 (예 : 다른 MySQL 서버 또는 myisamchk) 내에서 MyISAM 테이블을 사용해서는 안됩니다. 그렇게하면 인덱스가 손상됩니다.
+# 
+# 테이블에 대해 DELAY_KEY_WRITE가 활성화 된 경우 모든 인덱스 업데이트시 테이블에 대한 키 버퍼가 플러시되지 않고 테이블이 닫힐 때만 플러시됩니다. 이렇게하면 키에 대한 쓰기 속도가 상당히 빨라지지만이 기능을 사용하는 경우 myisam_recover_options 시스템 변수 세트 (예 : myisam_recover_options = 'BACKUP, FORCE')로 서버를 시작하여 모든 MyISAM 테이블의 자동 검사를 추가해야합니다. 섹션 5.1.7,“서버 시스템 변수”및 섹션 15.2.1,“MyISAM 시작 옵션”을 참조하십시오.
+# 
+# --skip-new로 mysqld를 시작하면 delay_key_write가 OFF로 설정됩니다.
+# 
+# 경고
+# --external-locking을 사용하여 외부 잠금을 활성화하면 지연된 키 쓰기를 사용하는 테이블에 대한 인덱스 손상에 대한 보호가 없습니다.
+# 
+# * Apply Option
+# delay_key_write=ON
+# 
+# --------------------------------------------
+
+
+# 
 # @ delayed_insert_limit
 # 
 # Command-Line Format : --delayed-insert-limit=#
@@ -638,7 +674,81 @@
 # 
 # 경고
 # --external-locking을 사용하여 외부 잠금을 활성화하면 지연된 키 쓰기를 사용하는 테이블에 대한 인덱스 손상에 대한 보호가 없습니다.
+#
+# * Apply Option
+# delay_key_write=ON
 #  
+# --------------------------------------------
+# 
+# @ disconnect_on_expired_password
+# 
+# Command-Line Format : --disconnect-on-expired-password[={OFF|ON}]
+# System Variable : disconnect_on_expired_password
+# Scope : Global
+# Dynamic : No
+# Type : Boolean
+# Default Value : ON
+# 
+# 이 변수는 서버가 만료 된 암호로 클라이언트를 처리하는 방법을 제어합니다.
+# -클라이언트가 만료된 암호를 처리 할 수 있다고 표시하면 disconnect_on_expired_password 값은 관련이 없습니다. 서버는 클라이언트의 연결을 허용하지만 샌드 박스 모드로 설정합니다.
+# -클라이언트가 만료된 암호를 처리 할 수 있다고 표시하지 않으면 서버는 disconnect_on_expired_password 값에 따라 클라이언트를 처리합니다.
+#    * disconnect_on_expired_password :가 활성화되면 서버는 클라이언트 연결을 끊습니다.
+#    * disconnect_on_expired_password :가 비활성화 된 경우 서버는 클라이언트 연결을 허용하지만 샌드 박스 모드로 전환합니다.
+# 
+# 만료된 암호 처리와 관련된 클라이언트 및 서버 설정의 상호 작용에 대한 자세한 내용은 6.2.12 절“만료 된 암호의 서버 처리”를 참조하십시오.
+# 
+# * Apply Option
+# disconnect_on_expired_password=ON
+# 
+# --------------------------------------------
+# 
+# @ div_precision_increment
+# 
+# Command-Line Format : --div-precision-increment=#
+# System Variable : div_precision_increment
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 4
+# Minimum Value : 0
+# Maximum Value : 30
+# 
+# 이 변수는 / 연산자로 수행 한 나눗셈 연산 결과의 스케일을 증가시킬 자릿수를 나타냅니다. 기본값은 4입니다. 최소값과 최대 값은 각각 0과 30입니다. 다음 예제는 기본값 증가의 효과를 보여줍니다.
+# 
+# mysql> SELECT 1/7;
+# +--------+
+# | 1/7    |
+# +--------+
+# | 0.1429 |
+# +--------+
+# 
+# mysql> SET div_precision_increment = 12;
+# mysql> SELECT 1/7;
+# +----------------+
+# | 1/7            |
+# +----------------+
+# | 0.142857142857 |
+# +----------------+
+# 
+# * Apply Option
+# div_precision_increment=4
+#
+# --------------------------------------------
+# 
+# @ end_markers_in_json
+# 
+# Command-Line Format : --end-markers-in-json[={OFF|ON}]
+# System Variable : end_markers_in_json
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : OFF
+# 
+# 옵티 마이저 JSON 출력이 종료 마커를 추가해야하는지 여부입니다. MySQL 내부 : end_markers_in_json 시스템 변수를 참조하십시오.
+# 
+# * Apply Option
+# end_markers_in_json=OFF
+# 
 # --------------------------------------------
 # 
 # @ event_scheduler :
@@ -2770,6 +2880,39 @@ $ 기본 데이터베이스가 없는 경우 변수는 collation_server와 동�
 #
 # * Apply Option
 # optimizer_trace_offset=none
+#
+# --------------------------------------------
+# 
+# @ eq_range_index_dive_limit
+# 
+# Command-Line Format	--eq-range-index-dive-limit=#
+# System Variable	eq_range_index_dive_limit
+# Scope	Global, Session
+# Dynamic	Yes
+# Type	Integer
+# Default Value	200
+# Minimum Value	0
+# Maximum Value	4294967295
+# 
+# 이 변수는 옵티마이 저가 정규화 행수를 추정할 때 인덱스 다이빙 사용에서 인덱스 통계로 전환해야할때 동등 비교 조건에서 동등 범위수를 나타냅니다.
+# 이는 최적화 프로그램이 고유하지 않은 인덱스를 사용하여 col_name 값을 조회하는 다음과 같은 동등한 형식중 하나를 갖는 표현식의 평가에 적용됩니다.
+# 
+# col_name IN(val1, ..., valN)
+# col_name = val1 OR ... OR col_name = valN
+# 
+# 두 경우 모두 표현식에 N 개의 같음 범위가 포함됩니다. 옵티마이 저는 인덱스 다이빙 또는 인덱스 통계를 사용하여 행을 추정 할 수 있습니다.
+# eq_range_index_dive_limit가 0보다 크면 옵티마이저는 # eq_range_index_dive_limit 이상의 동일 범위가있는 경우 인덱스 다이빙 대신 기존 인덱스 통계를 사용합니다.
+# 따라서 최대 N 개의 동일 범위에 대한 인덱스 다이빙 사용을 허용하려면 eq_range_index_dive_limit를 N + 1로 설정합니다.
+# 인덱스 통계 사용을 비활성화하고 N에 관계없이 항상 인덱스 다이빙을 사용하려면 eq_range_index_dive_limit를 0으로 설정합니다.
+# 
+# 자세한 내용은 다값 비교의 동등 범위 최적화 단원을 참조하십시오.
+# 
+# 최상의 추정치를 위해 테이블 인덱스 통계를 업데이트하려면 ANALYZE TABLE을 사용하십시오.
+# 
+# * Apply Option
+# eq_range_index_dive_limit=200
+# 
+# --------------------------------------------
 # 
 # 
 # ===================================================================================
@@ -3569,33 +3712,6 @@ $ 기본 데이터베이스가 없는 경우 변수는 collation_server와 동�
 # ------------------------------------------------------------
 # -------------Session & Client Track 관련 옵션들.-------------
 # ------------------------------------------------------------
-#
-# @ session_track_gtids
-# 
-# Property : Value
-# Command-Line Format : --session-track-gtids=value
-# System Variable : session_track_gtids
-# Scope : Global, Session
-# Dynamic : Yes
-# Type : Enumeration
-# Default Value : OFF
-# Valid Values  : OFF, OWN_GTID, ALL_GTIDS
-# 
-# 서버가 현재 세션 내에서 GTID를 추적하여 클라이언트에 반환할지 여부를 제어합니다.
-# 변수 값에 따라 각 트랜잭션 실행이 끝날 때 서버 GTID가 추적 프로그램에 의해 캡처되어 클라이언트로 리턴됩니다. 다음 session_track_gtids 값이 허용됩니다.
-# 
-# -OFF : 트래커가 GTID를 수집하지 않습니다. 이것이 기본값입니다.
-# -OWN_GTID : 추적기는 성공적으로 커밋 된 읽기 / 쓰기 트랜잭션에 의해 생성 된 GTID를 수집합니다.
-# -ALL_GTIDS : 추적기는 트랜잭션이 읽기 / 쓰기 또는 읽기 전용인지에 관계없이 현재 트랜잭션이 커밋 될 때 gtid_executed 시스템 변수에서 모든 GTID를 수집합니다.
-# 
-# session_track_gtids는 트랜잭션 컨텍스트 내에서 설정할 수 없습니다.
-# 
-# 세션 상태 추적에 대한 자세한 내용은 5.1.14 절“클라이언트 세션 상태 변경에 대한 서버 추적”을 참조하십시오.
-#
-# * Apply Option
-# session_track_gtids=OFF
-# 
-# --------------------------------------------
 # 
 # @ session_track_schema
 # 
@@ -6576,4 +6692,30 @@ $ 기본 데이터베이스가 없는 경우 변수는 collation_server와 동�
 # * Apply Option
 # gtid_purged=none
 # 
+# --------------------------------------------
+# @ session_track_gtids
+# 
+# Property : Value
+# Command-Line Format : --session-track-gtids=value
+# System Variable : session_track_gtids
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Enumeration
+# Default Value : OFF
+# Valid Values  : OFF, OWN_GTID, ALL_GTIDS
+# 
+# 서버가 현재 세션 내에서 GTID를 추적하여 클라이언트에 반환할지 여부를 제어합니다.
+# 변수 값에 따라 각 트랜잭션 실행이 끝날 때 서버 GTID가 추적 프로그램에 의해 캡처되어 클라이언트로 리턴됩니다. 다음 session_track_gtids 값이 허용됩니다.
+# 
+# -OFF : 트래커가 GTID를 수집하지 않습니다. 이것이 기본값입니다.
+# -OWN_GTID : 추적기는 성공적으로 커밋 된 읽기 / 쓰기 트랜잭션에 의해 생성 된 GTID를 수집합니다.
+# -ALL_GTIDS : 추적기는 트랜잭션이 읽기 / 쓰기 또는 읽기 전용인지에 관계없이 현재 트랜잭션이 커밋 될 때 gtid_executed 시스템 변수에서 모든 GTID를 수집합니다.
+# 
+# session_track_gtids는 트랜잭션 컨텍스트 내에서 설정할 수 없습니다.
+# 
+# 세션 상태 추적에 대한 자세한 내용은 5.1.14 절“클라이언트 세션 상태 변경에 대한 서버 추적”을 참조하십시오.
+#
+# * Apply Option
+# session_track_gtids=OFF
+#
 # --------------------------------------------
