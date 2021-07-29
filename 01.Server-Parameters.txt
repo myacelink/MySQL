@@ -799,6 +799,54 @@
 # 
 # --------------------------------------------
 # 
+# @ flush
+# 
+# Command-Line Format : --flush[={OFF|ON}]
+# System Variable : flush
+# Scope : Global
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : OFF
+# 
+# If ON, the server flushes (synchronizes) all changes to disk after each SQL statement. Normally, MySQL does a write of all changes to disk only after each SQL statement and lets the operating system handle the synchronizing to disk. See Section B.3.3.3, “What to Do If MySQL Keeps Crashing”. This variable is set to ON if you start mysqld with the --flush option.
+# 
+# Note
+# If flush is enabled, the value of flush_time does not matter and changes to flush_time have no effect on flush behavior.
+# 
+# 
+# ON이면 서버는 각 SQL 문 이후에 디스크의 모든 변경 사항을 플러시 (동기화)합니다.
+# 일반적으로 MySQL은 각 SQL 문 후에 만 모든 변경 사항을 디스크에 기록하고 운영 체제가 디스크 동기화를 처리하도록합니다.
+# B.3.3.3 절.“MySQL이 계속 충돌하는 경우 수행 할 작업”을 참조하십시오. --flush 옵션으로 mysqld를 시작하면이 변수는 ON으로 설정됩니다.
+# 
+# 노트
+# flush가 활성화 된 경우 flush_time의 값은 중요하지 않으며 flush_time의 변경 사항은 플러시 동작에 영향을주지 않습니다.
+# 
+# * Apply Option
+# flush=OFF
+# 
+# --------------------------------------------
+# 
+# @ flush_time
+# 
+# Command-Line Format : --flush-time=#
+# System Variable : flush_time
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 0
+# Minimum Value : 0
+# 
+# 이 값이 0이 아닌 값으로 설정되면 모든 테이블이 flush_time 초마다 닫혀 리소스를 확보하고 플러시되지 않은 데이터를 디스크에 동기화합니다.
+# 이 옵션은 최소한의 리소스가있는 시스템에서만 사용하는 것이 가장 좋습니다.
+# 
+# 노트
+# flush가 활성화 된 경우 flush_time의 값은 중요하지 않으며 flush_time의 변경 사항은 플러시 동작에 영향을주지 않습니다.
+# 
+# * Apply Option
+# flush_time=0
+# 
+# --------------------------------------------
+# 
 # @ general_log :
 # 
 # Property : Value
@@ -3817,6 +3865,72 @@ $ 기본 데이터베이스가 없는 경우 변수는 collation_server와 동�
 #
 # * Apply Option
 # session_track_transaction_info=OFF
+
+# ===============================================================================
+# ========================== full text Parameter  ===============================
+# ===============================================================================
+# 
+# @ ft_boolean_syntax
+# 
+# Command-Line Format : --ft-boolean-syntax=name
+# System Variable : ft_boolean_syntax
+# Scope : Global
+# Dynamic : Yes
+# Type : String
+# Default Value : + -><()~*:""&|
+# 
+# IN BOOLEAN MODE를 사용하여 수행 된 부울 전체 텍스트 검색에서 지원하는 연산자 목록입니다. Section 12.10.2,“부울 전체 텍스트 검색”을 참조하십시오.
+# 
+# 기본 변수 값은 '+-> <() ~ * : ""& |'입니다. 값을 변경하는 규칙은 다음과 같습니다.
+# -연산자 기능은 문자열 내 위치에 따라 결정됩니다.
+# -대체 값은 14 자 여야합니다.
+# -각 문자는 영숫자가 아닌 ASCII 문자 여야합니다.
+# -첫 번째 또는 두 번째 문자는 공백이어야합니다.
+# -11 번과 12 번 위치에있는 인용구 연산자를 제외하고는 중복이 허용되지 않습니다. 이 두 문자는 동일 할 필요는 없지만 둘만 있을 수 있습니다.
+# -위치 10, 13 및 14 (기본적으로 :, & 및 |로 설정 됨)는 향후 확장을 위해 예약되어 있습니다.
+# 
+# * Apply Option
+# ft_boolean_syntax=NONE
+#
+# --------------------------------------------
+# 
+# @ ft_min_word_len
+# 
+# Command-Line Format : --ft-min-word-len=#
+# System Variable : ft_min_word_len
+# Scope : Global
+# Dynamic : No
+# Type : Integer
+# Default Value ; 4
+# Minimum Value : 1
+# 
+# MyISAM FULLTEXT 인덱스에 포함될 단어의 최소 길이입니다.
+# 
+# 노트
+# MyISAM 테이블의 FULLTEXT 인덱스는이 변수를 변경 한 후에 다시 작성해야합니다. REPAIR TABLE tbl_name QUICK을 사용하십시오.
+# 
+# * Apply Option
+# ft_min_word_len=4
+#
+# --------------------------------------------
+# 
+# @ ft_query_expansion_limit
+# 
+# Command-Line Format : --ft-query-expansion-limit=#
+# System Variable : ft_query_expansion_limit
+# Scope : Global
+# Dynamic : No
+# Type : Integer
+# Default Value : 20
+# Minimum Value : 0
+# Maximum Value : 1000
+# 
+# WITH QUERY EXPANSION을 사용하여 수행 된 전체 텍스트 검색에 사용할 상위 일치 수입니다.
+#
+# * Apply Option
+# ft_query_expansion_limit=20
+# 
+# --------------------------------------------
 #
 # ===============================================================================
 # ========================== Replication Parameter  =============================
