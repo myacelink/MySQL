@@ -445,6 +445,49 @@
 # 
 # --------------------------------------------
 # 
+# @ have_ssl
+# 
+# System Variable : have_ssl
+# Scope : Global
+# Dynamic : No
+# Type : String
+# Valid Values : YES (SSL support available),
+                 DISABLED (SSL support was compiled into server, but server was not started with necessary options to enable it)
+# 
+# mysqld가 SSL 연결을 지원하면 YES, 서버가 SSL 지원으로 컴파일되었지만 적절한 연결 암호화 옵션으로 시작되지 않은 경우 DISABLED입니다.
+# 자세한 내용은 2.9.6 절.“SSL 라이브러리 지원 구성”을 참조하십시오.
+# 
+# 
+# --------------------------------------------
+# 
+# @ have_symlink
+# 
+# 심볼릭 링크 지원이 활성화 된 경우 YES, 그렇지 않은 경우 NO.
+# 이것은 DATA DIRECTORY 및 INDEX DIRECTORY 테이블 옵션을 지원하기 위해 Unix에서 필요합니다.
+# 서버가 --skip-symbolic-links 옵션으로 시작된 경우 값은 DISABLED입니다.
+# 
+# 이 변수는 Windows에서 의미가 없습니다.
+# 
+# 
+# --------------------------------------------
+# 
+# @ have_statement_timeout
+# 
+# System Variable : have_statement_timeout
+# Scope : Global
+# Dynamic : No
+# Type : Boolean
+# 
+# Whether the statement execution timeout feature is available (see Statement Execution Time Optimizer Hints). The value can be NO if the background thread used by this feature could not be initialized.
+# 
+# 문 실행 시간 제한 기능을 사용할 수 있는지 여부 (명령문 실행 시간 최적화 프로그램 힌트 참조).
+# 이 기능에서 사용하는 백그라운드 스레드를 초기화 할 수없는 경우 값은 NO 일 수 있습니다.
+# 
+# * Apply Option
+# have_statement_timeout=<>
+# 
+# --------------------------------------------
+# 
 # @ have_profiling
 # 
 # 명령문 프로파일 링 기능이 있으면 YES, 그렇지 않으면 NO.
@@ -945,6 +988,44 @@
 # group_concat_max_len=1024
 #
 # --------------------------------------------
+# 
+# host_cache_size
+# 
+# Command-Line Format : --host-cache-size=#
+# System Variable : host_cache_size
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : -1 (signifies autosizing; do not assign this literal value)
+# Minimum Value : 0
+# Maximum Value : 65536
+# 
+# 
+# MySQL 서버는 클라이언트 호스트 이름과 IP 주소 정보를 포함하는 메모리 내 호스트 캐시를 유지하며 DNS (Domain Name System) 조회를 방지하는 데 사용됩니다.
+# 5.1.11.2 절.“DNS 조회 및 호스트 캐시”를 참조하십시오.
+# 
+# host_cache_size 변수는 호스트 캐시의 크기뿐만 아니라 캐시 내용을 노출하는 성능 스키마 host_cache 테이블의 크기를 제어합니다.
+# host_cache_size를 설정하면 다음과 같은 효과가 있습니다.
+# - 크기를 0으로 설정하면 호스트 캐시가 비활성화됩니다. 캐시를 비활성화하면 서버는 클라이언트가 연결할 때마다 DNS 조회를 수행합니다.
+# - 런타임시 크기를 변경하면 호스트 캐시를 지우고 host_cache 테이블을 자르고 차단 된 호스트의 차단을 해제하는 암시 적 호스트 캐시 플러시 작업이 발생합니다.
+# 
+# 기본값은 최대 500 개까지의 max_connections 값에 대해 1을 더한 128, max_connections 값에서 500 이상 20 씩 증가 할 때마다 1로 자동 크기가 조정되며 제한은 2000으로 제한됩니다.
+# 
+# --skip-host-cache 옵션을 사용하는 것은 host_cache_size 시스템 변수를 0으로 설정하는 것과 유사하지만
+# host_cache_size는 서버 시작시뿐만 아니라 런타임시 호스트 캐시의 크기를 조정, 활성화 및 비활성화하는 데 사용할 수도 있기 때문에 더 유연합니다.
+# --skip-host-cache를 사용하여 서버를 시작해도 host_cache_size 값에 대한 런타임 변경이 방지되지는 않지만 이러한 변경 사항은 적용되지 않으며
+# host_cache_size가 0보다 크게 설정 되어도 캐시가 다시 활성화되지 않습니다.
+#
+# * Apply Option
+# host_cache_size=-1
+# 
+# --------------------------------------------
+# 
+# @ identity
+# 
+# 이 변수는 last_insert_id 변수의 동의어입니다. 다른 데이터베이스 시스템과의 호환성을 위해 존재합니다. SELECT @@ identity로 값을 읽고 SET ID를 사용하여 설정할 수 있습니다.
+# 
+# --------------------------------------------
 #
 # @ interactive_timeout
 # 
@@ -958,6 +1039,23 @@
 # 서버가 대화식 연결을 닫기 전에 활동을 기다리는 시간 (초)입니다.
 # 대화 형 클라이언트는 mysql_real_connect ()에 CLIENT_INTERACTIVE 옵션을 사용하는 클라이언트로 정의됩니다. wait_timeout도 참조하십시오.
 #
+# 
+# --------------------------------------------
+# 
+# @ ignore_db_dirs
+# 
+# Deprecated : 5.7.16
+# System Variable : ignore_db_dirs
+# Scope : Global
+# Dynamic : No
+# Type : String
+# 
+# 데이터 디렉토리에서 데이터베이스 디렉토리로 간주되지 않는 쉼표로 구분 된 이름 목록입니다. 이 값은 서버 시작시 지정된 --ignore-db-dir 인스턴스에서 설정됩니다.
+# 
+# MySQL 5.7.11부터 --ignore-db-dir은 mysqld --initialize와 함께 데이터 디렉터리 초기화 시간에 사용되어 기존 데이터 디렉터리가 비어 있는지
+# 여부를 평가하기 위해 서버가 무시해야하는 디렉터리를 지정할 수 있습니다. 2.10.1 절.“데이터 디렉토리 초기화”를 참조하십시오.
+# 
+# 이 시스템 변수는 MySQL 5.7에서 더 이상 사용되지 않습니다. MySQL 8.0에 데이터 딕셔너리가 도입되면서 불필요 해졌고 해당 버전에서 제거되었습니다.
 # 
 # --------------------------------------------
 # 
