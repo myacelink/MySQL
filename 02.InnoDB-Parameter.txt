@@ -682,6 +682,39 @@
 # innodb_buffer_pool_size=134217728
 #
 # --------------------------------------------
+# 
+# @ innodb_additional_mem_pool_size
+# 
+# Command-Line Format	--innodb-additional-mem-pool-size=#
+# Deprecated	Yes
+# System Variable	innodb_additional_mem_pool_size
+# Scope	Global
+# Dynamic	No
+# Type	Integer
+# Default Value	8388608
+# Minimum Value	2097152
+# Maximum Value	4294967295
+# 
+# The size in bytes of a memory pool InnoDB uses to store data dictionary information and other internal data structures. The more tables you have in your application, the more memory you allocate here. If InnoDB runs out of memory in this pool, it starts to allocate memory from the operating system and writes warning messages to the MySQL error log. The default value is 8MB.
+# 
+# This variable relates to the InnoDB internal memory allocator, which is unused if innodb_use_sys_malloc is enabled. For more information, see Section 14.8.4, “Configuring the Memory Allocator for InnoDB”.
+# 
+# As of MySQL 5.6.3, innodb_additional_mem_pool_size is deprecated; expect it to be removed in a future MySQL release.
+# 
+# 
+# InnoDB가 데이터 사전 정보 및 기타 내부 데이터 구조를 저장하는 데 사용하는 메모리 풀의 크기 (바이트)입니다.
+# 애플리케이션에 테이블이 많을수록 여기에 더 많은 메모리를 할당합니다.
+# InnoDB가이 풀의 메모리가 부족하면 운영 체제에서 메모리를 할당하기 시작하고 MySQL 오류 로그에 경고 메시지를 기록합니다. 기본값은 8MB입니다.
+# 
+# 이 변수는 innodb_use_sys_malloc이 활성화 된 경우 사용되지 않는 InnoDB 내부 메모리 할당 자와 관련이 있습니다.
+# 자세한 내용은 Section 14.8.4,“InnoDB 용 메모리 할당 자 구성”을 참조하십시오.
+# 
+# MySQL 5.6.3부터 innodb_additional_mem_pool_size는 더 이상 사용되지 않습니다. 향후 MySQL 릴리스에서 제거 될 것으로 예상됩니다.
+# 
+# * Apply Option
+# innodb_additional_mem_pool_size=8388608
+# 
+# --------------------------------------------
 #
 # @ innodb_change_buffer_max_size
 #
@@ -3163,6 +3196,25 @@
 # innodb_stats_persistent_sample_pages=20
 #
 # --------------------------------------------
+# 
+# @ innodb_stats_sample_pages
+# 
+# Command-Line Format	--innodb-stats-sample-pages=#
+# Deprecated	Yes
+# System Variable	innodb_stats_sample_pages
+# Scope	Global
+# Dynamic	Yes
+# Type	Integer
+# Default Value	8
+# Minimum Value	1
+# Maximum Value	2**64-1
+# 
+# 더 이상 사용되지 않습니다. 대신 innodb_stats_transient_sample_pages를 사용하십시오.
+# 
+# * Apply Option
+# innodb_stats_sample_pages=8
+# 
+# --------------------------------------------
 #
 # @ innodb_stats_transient_sample_pages
 #
@@ -3730,4 +3782,24 @@
 # * Apply Option
 # innodb_write_io_threads=4
 #
+# --------------------------------------------
+# 
+# @ ignore_builtin_innodb
+# 
+# Command-Line Format : --ignore-builtin-innodb[={OFF|ON}]
+# Deprecated : Yes
+# System Variable : ignore_builtin_innodb
+# Scope : Global
+# Dynamic : No
+# Type : Boolean
+# 
+# In earlier versions of MySQL, enabling this variable caused the server to behave as if the built-in InnoDB were not present, which enabled the InnoDB Plugin to be used instead. In MySQL 5.7, InnoDB is the default storage engine and InnoDB Plugin is not used, so this variable is ignored.
+# 
+# 
+# 이전 버전의 MySQL에서는이 변수를 활성화하면 서버가 내장 InnoDB가없는 것처럼 작동하여 대신 InnoDB 플러그인을 사용할 수 있게되었습니다.
+# MySQL 5.7에서는 InnoDB가 기본 스토리지 엔진이고 InnoDB Plugin이 사용되지 않으므로이 변수는 무시됩니다.
+#
+# * Apply Option
+# ignore_builtin_innodb=ON
+# 
 # --------------------------------------------
