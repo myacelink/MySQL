@@ -5957,46 +5957,35 @@ validate_password가 다른 정책 설정 시스템 변수를 사용하는 방�
 # validate_password_special_char_count=1
 # 
 # --------------------------------------------
-
-Password Validation Plugin Status Variables
-
-If the validate_password plugin is enabled, it exposes status variables that provide operational information:
-validate_password 플러그인이 활성화 된 경우 작동 정보를 제공하는 상태 변수를 노출합니다.
-
-mysql> SHOW STATUS LIKE 'validate_password%';
-+-----------------------------------------------+---------------------+
-| Variable_name                                 | Value               |
-+-----------------------------------------------+---------------------+
-| validate_password.dictionary_file_last_parsed | 2019-10-03 08:33:49 |
-| validate_password_dictionary_file_words_count | 1902                |
-+-----------------------------------------------+---------------------+
-
-The following list describes the meaning of each status variable.
-
-- validate_password_dictionary_file_last_parsed
-When the dictionary file was last parsed.
-
-- validate_password_dictionary_file_words_count
-The number of words read from the dictionary file.
-
-다음 목록은 각 상태 변수의 의미를 설명합니다.
-
--validate_password_dictionary_file_last_parsed
-사전 파일이 마지막으로 구문 분석 된시기입니다.
-
--validate_password_dictionary_file_words_count
-사전 파일에서 읽은 단어 수입니다.
-
-# --------------------------------------------
-# --------------------------------------------
-# --------------------------------------------
-# --------------------------------------------
-# --------------------------------------------
-# --------------------------------------------
-# --------------------------------------------
-#
-#
-#
+# 
+# Password Validation Plugin Status Variables
+# 
+# If the validate_password plugin is enabled, it exposes status variables that provide operational information:
+# validate_password 플러그인이 활성화 된 경우 작동 정보를 제공하는 상태 변수를 노출합니다.
+# 
+# mysql> SHOW STATUS LIKE 'validate_password%';
+# +-----------------------------------------------+---------------------+
+# | Variable_name                                 | Value               |
+# +-----------------------------------------------+---------------------+
+# | validate_password.dictionary_file_last_parsed | 2019-10-03 08:33:49 |
+# | validate_password_dictionary_file_words_count | 1902                |
+# +-----------------------------------------------+---------------------+
+# 
+# The following list describes the meaning of each status variable.
+# 
+# - validate_password_dictionary_file_last_parsed
+# When the dictionary file was last parsed.
+# 
+# - validate_password_dictionary_file_words_count
+# The number of words read from the dictionary file.
+# 
+# 다음 목록은 각 상태 변수의 의미를 설명합니다.
+# 
+# -validate_password_dictionary_file_last_parsed
+# 사전 파일이 마지막으로 구문 분석 된시기입니다.
+# 
+# -validate_password_dictionary_file_words_count
+# 사전 파일에서 읽은 단어 수입니다.
 # 
 # ---------------------------------------------------------------------------
 # -----------Binary Logging Options and Variables----------------------------
