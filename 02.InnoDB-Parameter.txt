@@ -3746,6 +3746,26 @@
 # innodb_use_native_aio=ON
 #
 # --------------------------------------------
+# 
+# @ innodb_use_sys_malloc
+# 
+# Command-Line Format	--innodb-use-sys-malloc[={OFF|ON}]
+# Deprecated	Yes
+# System Variable	innodb_use_sys_malloc
+# Scope	Global
+# Dynamic	No
+# Type	Boolean
+# Default Value	ON
+# 
+# 운영 체제 메모리 할당자를 활성화합니다. 비활성화되면 InnoDB는 자체 할당자를 사용합니다. 기본값은 ON입니다.
+# 자세한 내용은 Section 14.8.4,“InnoDB 용 메모리 할당 자 구성”을 참조하십시오.
+# 
+# innodb_use_sys_malloc은 더 이상 사용되지 않습니다. 향후 MySQL 릴리스에서 제거 될 것으로 예상됩니다.
+# 
+# * Apply Option
+# innodb_use_sys_malloc=ON
+# 
+# --------------------------------------------
 #
 # @ innodb_version
 #

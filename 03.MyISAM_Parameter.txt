@@ -1,0 +1,208 @@
+# ====================================
+# ======= MyISAM Variables  ==========
+# ====================================
+# 
+# @ bulk_insert_buffer_size
+# 
+# Command-Line Format : --bulk-insert-buffer-size=#
+# System Variable : bulk_insert_buffer_size
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 8388608
+# Minimum Value : 0
+# Maximum Value (64-bit platforms) : 18446744073709551615
+# Maximum Value (32-bit platforms) : 4294967295
+# 
+# MyISAM은 특별한 트리형 캐시를 사용하여 비어 있지 않은 테이블에 데이터를 추가 할 때
+# INSERT ... SELECT, INSERT ... VALUES (...), (...), ... 및 LOAD DATA에 대한 대량 삽입을 더 빠르게 수행합니다.
+# 이 변수는 스레드당 바이트 단위로 캐시 트리의 크기를 제한합니다. 0으로 설정하면이 최적화가 비활성화됩니다. 기본값은 8MB입니다.
+# 
+# * Apply Option
+# bulk_insert_buffer_size=8388608
+#
+# --------------------------------------------
+#
+# @ have_rtree_keys
+# 
+# RTREE 인덱스를 사용할 수 있으면 YES, 그렇지 않으면 NO. (MyISAM 테이블의 공간 인덱스에 사용됩니다.)
+#
+# --------------------------------------------
+#
+# @ delay_key_write
+# 
+# Command-Line Format : --delay-key-write[={OFF|ON|ALL}]
+# System Variable : delay_key_write
+# Scope : Global
+# Dynamic : Yes
+# Type : Enumeration
+# Default Value : ON
+# Valid Values : ON, OFF, ALL
+# 
+# 이 변수는 지연된 키 쓰기를 사용하는 방법을 지정합니다. MyISAM 테이블에만 적용됩니다.
+# 지연된 키 쓰기는 쓰기 사이에 키 버퍼가 플러시되지 않도록합니다. 15.2.1 절.“MyISAM 시작 옵션”도 참조하십시오.
+# 
+# 이 변수는 CREATE TABLE 문에서 사용할 수있는 DELAY_KEY_WRITE 테이블 옵션의 처리에 영향을주는 다음값중 하나를 가질 수 있습니다.
+# 
+# 옵션 설명
+# OFF DELAY_KEY_WRITE는 무시됩니다.
+# ON MySQL은 CREATE TABLE 문에 지정된 DELAY_KEY_WRITE 옵션을 따릅니다. 이것이 기본값입니다.
+# ALL 새로 열린 모든 테이블은 DELAY_KEY_WRITE 옵션이 활성화 된 상태에서 생성 된 것처럼 처리됩니다.
+# 노트
+# 이 변수를 ALL로 설정하면 테이블이 사용 중일 때 다른 프로그램 (예 : 다른 MySQL 서버 또는 myisamchk) 내에서 MyISAM 테이블을 사용해서는 안됩니다.
+# 그렇게하면 인덱스가 손상됩니다.
+# 
+# 테이블에 대해 DELAY_KEY_WRITE가 활성화 된 경우 모든 인덱스 업데이트시 테이블에 대한 키 버퍼가 플러시되지 않고 테이블이 닫힐 때만 플러시됩니다.
+# 이렇게하면 키에 대한 쓰기 속도가 상당히 빨라지지만이 기능을 사용하는 경우 myisam_recover_options 시스템 변수 세트
+# (예 : myisam_recover_options = 'BACKUP, FORCE')로 서버를 시작하여 모든 MyISAM 테이블의 자동 검사를 추가해야합니다.
+# 섹션 5.1.7,“서버 시스템 변수”및 섹션 15.2.1,“MyISAM 시작 옵션”을 참조하십시오.
+# 
+# --skip-new로 mysqld를 시작하면 delay_key_write가 OFF로 설정됩니다.
+# 
+# 경고
+# --external-locking을 사용하여 외부 잠금을 활성화하면 지연된 키 쓰기를 사용하는 테이블에 대한 인덱스 손상에 대한 보호가 없습니다.
+# 
+# * Apply Option
+# delay_key_write=ON
+# 
+# --------------------------------------------
+# 
+# @ delay_key_write
+# 
+# https://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html#sysvar_bind_address
+# 
+# Command-Line Format : --delay-key-write[={OFF|ON|ALL}]
+# System Variable : delay_key_write
+# Scope : Global
+# Dynamic : Yes
+# Type : Enumeration
+# Default Value : ON
+# Valid Values : ON, OFF, ALL
+# 
+# 이 변수는 지연된 키 쓰기를 사용하는 방법을 지정합니다. MyISAM 테이블에만 적용됩니다. 지연된 키 쓰기는 쓰기 사이에 키 버퍼가 플러시되지 않도록합니다.
+# 15.2.1 절.“MyISAM 시작 옵션”도 참조하십시오.
+# 이 변수는 CREATE TABLE 문에서 사용할 수있는 DELAY_KEY_WRITE 테이블 옵션의 처리에 영향을주는 다음 값 중 하나를 가질 수 있습니다.
+# 
+# 옵션    | 설명
+# OFF    | DELAY_KEY_WRITE는 무시됩니다.
+# ON     | MySQL은 CREATE TABLE 문에 지정된 DELAY_KEY_WRITE 옵션을 따릅니다. 이것이 기본값입니다.
+# ALL    | 새로 열린 모든 테이블은 DELAY_KEY_WRITE 옵션이 활성화 된 상태에서 생성된 것처럼 처리됩니다.
+#
+# 노트
+# 이 변수를 ALL로 설정하면 테이블이 사용 중일 때 다른 프로그램 (예 : 다른 MySQL 서버 또는 myisamchk) 내에서 MyISAM 테이블을 사용해서는 안됩니다.
+# 그렇게하면 인덱스가 손상됩니다.
+# 
+# 테이블에 대해 DELAY_KEY_WRITE가 활성화 된 경우 모든 인덱스 업데이트시 테이블에 대한 키 버퍼가 플러시되지 않고 테이블이 닫힐 때만 플러시됩니다.
+# 이렇게하면 키에 대한 쓰기 속도가 상당히 빨라지지만이 기능을 사용하는 경우 myisam_recover_options 시스템 변수 세트
+# (예 : myisam_recover_options = 'BACKUP, FORCE')로 서버를 시작하여 모든 MyISAM 테이블의 자동 검사를 추가해야합니다.
+# 섹션 5.1.7,“서버 시스템 변수”및 섹션 15.2.1,“MyISAM 시작 옵션”을 참조하십시오.
+# 
+# --skip-new로 mysqld를 시작하면 delay_key_write가 OFF로 설정됩니다.
+# 
+# 경고
+# --external-locking을 사용하여 외부 잠금을 활성화하면 지연된 키 쓰기를 사용하는 테이블에 대한 인덱스 손상에 대한 보호가 없습니다.
+#
+# * Apply Option
+# delay_key_write=ON
+#  
+# --------------------------------------------
+# @ keep_files_on_create
+# 
+# Command-Line Format	--keep-files-on-create[={OFF|ON}]
+# System Variable	keep_files_on_create
+# Scope	Global, Session
+# Dynamic	Yes
+# Type	Boolean
+# Default Value	OFF
+# 
+# DATA DIRECTORY 옵션없이 MyISAM 테이블을 생성하면 데이터베이스 디렉토리에 .MYD 파일이 생성됩니다.
+# 기본적으로 MyISAM인 경우 기존 .MYD 파일을 찾으면 이를 덮어 씁니다. INDEX DIRECTORY 옵션없이 생성 된 테이블의 .MYI 파일에도 동일하게 적용됩니다.
+# 이 동작을 억제하려면 keep_files_on_create 변수를 ON(1)으로 설정하십시오.이 경우 MyISAM은 기존 파일을 덮어 쓰지 않고 대신 오류를 반환합니다. 기본값은 OFF (0)입니다.
+# 
+# MyISAM 테이블이 DATA DIRECTORY 또는 INDEX DIRECTORY 옵션으로 생성되고 기존 .MYD 또는 .MYI 파일이있는 경우 MyISAM은 항상 오류를 반환합니다.
+# 지정된 디렉토리에있는 파일을 덮어 쓰지 않습니다.
+#
+# * Apply Option
+# keep_files_on_create=OFF
+# 
+# --------------------------------------------
+# 
+# read_buffer_size
+# 
+# Command-Line Format	--read-buffer-size=#
+# System Variable	read_buffer_size
+# Scope	Global, Session
+# Dynamic	Yes
+# Type	Integer
+# Default Value	131072
+# Minimum Value	8192
+# Maximum Value	2147479552
+# 
+# MyISAM 테이블에 대한 순차 스캔을 수행하는 각 스레드는 스캔하는 각 테이블에 대해이 크기 (바이트)의 버퍼를 할당합니다. 순차 스캔을 여러 번 수행하는 경우이 값을 늘릴 수 있습니다.
+# 기본값은 131072입니다. 이 변수의 값은 4KB의 배수여야 합니다. 4KB의 배수가 아닌 값으로 설정된 경우 해당 값은 가장 가까운 4KB의 배수로 내림됩니다.
+# 
+# 이 옵션은 모든 스토리지 엔진에 대해 다음 컨텍스트에서도 사용됩니다.
+# * ORDER BY에 대한 행을 정렬 할 때 임시 파일 (임시 테이블이 아님)에 인덱스를 캐싱합니다.
+# * 파티션에 대량 삽입하는 경우.
+# * 중첩 된 쿼리 결과를 캐싱합니다.
+# 
+# read_buffer_size는 MEMORY 테이블의 메모리 블록 크기를 결정하는 다른 스토리지 엔진별 방법으로도 사용됩니다.
+# 
+# 다른 작업 중 메모리 사용에 대한 자세한 내용은 8.12.4.1 절.“MySQL이 메모리를 사용하는 방법”을 참조하십시오.
+# 
+# --------------------------------------------
+# 
+# @ read_rnd_buffer_size :
+# 
+# Property : Value
+# Command-Line Format : --read-rnd-buffer-size=#
+# System Variable : read_rnd_buffer_size
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 262144
+# Minimum Value : 1
+# Maximum Value : 2147483647
+#
+# 이 변수는 MyISAM 테이블에서 읽기 및 모든 스토리지 엔진에서 다중 범위 읽기 최적화에 사용됩니다.
+# 
+# 키 정렬 작업 후에 MyISAM 테이블에서 행을 정렬 된 순서로 읽을 때 디스크 검색을 피하기 위해이 버퍼를 통해 행을 읽습니다. 8.2.1.14 절“ORDER BY 최적화”를 참조하십시오.
+# 변수를 큰 값으로 설정하면 ORDER BY 성능을 크게 향상시킬 수 있습니다. 그러나 이것은 각 클라이언트에 할당 된 버퍼이므로 전역 변수를 큰 값으로 설정해서는 안됩니다.
+# 대신 큰 쿼리를 실행해야하는 클라이언트 내에서만 세션 변수를 변경하십시오.
+# 
+# 다른 작업 중 메모리 사용에 대한 자세한 내용은 8.12.4.1 절“MySQL에서 메모리를 사용하는 방법”을 참조하십시오.
+# 다중 범위 읽기 최적화에 대한 자세한 내용은 8.2.1.10 절.“다중 범위 읽기 최적화”를 참조하십시오.
+#
+# * Apply Option
+# read_rnd_buffer_size=262144
+# 
+# --------------------------------------------
+#
+# @ concurrent_insert
+# 
+# Command-Line Format : --concurrent-insert[=value]
+# System Variable : concurrent_insert
+# Scope : Global
+# Dynamic : Yes
+# Type : Enumeration
+# Default Value : AUTO
+# Valid Values : NEVER(0), AUTO(1), ALWAYS(2)
+# 
+# AUTO(기본값)인 경우 MySQL은 데이터 파일 중간에 사용 가능한 블록이 없는 MyISAM 테이블에 대해 INSERT 및 SELECT 문을 동시에 실행하도록 허용합니다.
+# 
+# 이 변수는 다음 표에 표시된 값을 사용할 수 있습니다. 변수는 이름 값 또는 해당 정수 값을 사용하여 할당 할 수 있습니다.
+# 
+# 값 설명
+# NEVER (또는 0) 동시 삽입을 비활성화합니다.
+# AUTO (또는 1) (기본값) 구멍이없는 MyISAM 테이블에 대한 동시삽입을 활성화합니다.
+# ALWAYS (또는 2) 구멍이있는 테이블을 포함하여 모든 MyISAM 테이블에 대해 동시삽입을 활성화합니다.
+# 구멍이있는 테이블의 경우 다른 스레드에서 사용중인 경우 새 행이 테이블 끝에 삽입됩니다. 그렇지 않으면 MySQL은 정상적인 쓰기 잠금을 획득하고 행을 구멍에 삽입합니다.
+# --skip-new로 mysqld를 시작하면 concurrent_insert가 NEVER로 설정됩니다.
+# 
+# 8.11.3 절.“동시 삽입물”도 참조하십시오.
+#
+# * Apply Option
+# concurrent_insert=NEVER
+# 
+# --------------------------------------------
+

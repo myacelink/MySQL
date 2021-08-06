@@ -1,0 +1,933 @@
+# ---------------------------------------------------------------------------
+# -----------Binary Logging Options and Variables----------------------------
+# ---------------------------------------------------------------------------
+# 
+# @ --binlog-row-event-max-size=N
+# 
+# Property : Value
+# Command-Line Format : --binlog-row-event-max-size=#
+# Type : Integer
+# Default Value : 8192
+# Minimum Value : 256
+# Maximum Value : (64-bit platforms) - 18446744073709551615
+# Maximum Value : (32-bit platforms) - 4294967295
+# 
+# 행 기반 이진 로그 이벤트의 최대 크기를 바이트 단위로 지정하십시오. 행은 가능한 경우이 크기보다 작은 이벤트로 그룹화됩니다.
+# 값은 256의 배수 여야합니다. 기본값은 8192입니다. 16.2.1 절“복제 형식”을 참조하십시오.
+#
+# * Apply Option
+# binlog-row-event-max-size=N
+# 
+# --------------------------------------------
+# 
+# @ --log-bin[=base_name]
+# 
+# Property : Value
+# Command-Line Format : --log-bin=file_name
+# Type : File name
+# 
+# 이진 로깅을 활성화합니다. 이진 로깅을 사용하면 서버는 데이터를 변경하는 모든 문을 백업 및 복제에 사용되는 이진 로그로 기록합니다.
+# 이진 로그는 기본 이름과 숫자 확장자를 가진 일련의 파일입니다. 이진 로그의 형식 및 관리에 대한 자세한 내용은 5.4.4 절“이진 로그”를 참조하십시오.
+# 
+# --log-bin 옵션에 값을 제공하면 해당 값이 로그 시퀀스의 기본 이름으로 사용됩니다. 서버는 기본 이름에 숫자 접미사를 추가하여 이진 로그 파일을 순서대로 만듭니다.
+# MySQL 5.7에서 기본 이름은 호스트 시스템의 이름을 사용하여 기본적으로 host_name-bin입니다.
+# 기본 이름 변경에 관계없이 동일한 이진 로그 파일 이름을 계속 사용할 수 있도록 기본 이름을 지정하는 것이 좋습니다.
+# 
+# 이진 로그 파일의 기본 위치는 데이터 디렉토리입니다. --log-bin 옵션을 사용하여 다른 이름을 지정할 기본 이름에 선행 절대 경로 이름을 추가하여 대체 위치를 지정할 수 있습니다.
+# 서버는 사용 된 이진 로그 파일을 추적하는 이진 로그 인덱스 파일에서 항목을 읽을 때 항목에 상대 경로가 포함되어 있는지 확인합니다.
+# 그렇다면 경로의 상대 부분이 --log-bin 옵션을 사용하여 설정된 절대 경로로 바뀝니다. 이진 로그 인덱스 파일에 기록 된 절대 경로는 변경되지 않습니다.
+# 이 경우 새 경로를 사용할 수 있도록 색인 파일을 수동으로 편집해야합니다.
+# (이전 버전의 MySQL에서는 이진 로그 또는 릴레이 로그 파일을 재배치 할 때마다 수동 개입이 필요했습니다.) (버그 # 11745230, 버그 # 12133)
+# 
+# 이 옵션을 설정하면 log_bin 시스템 변수가 기본 이름이 아닌 ON (또는 1)으로 설정됩니다. 이진 로그 파일 기본 이름 및 지정된 경로는 log_bin_basename 시스템 변수로 사용 가능합니다.
+# 
+# server_id 시스템 변수를 지정하지 않고 --log-bin 옵션을 지정하면 서버를 시작할 수 없습니다. (버그 # 11763963, 버그 # 56739)
+# 
+# 서버에서 GTID를 사용중인 경우 비정상 종료 후 서버를 다시 시작할 때 이진 로깅을 사용하지 않으면 일부 GTID가 손실되어 복제가 실패 할 수 있습니다.
+# 정상 종료시, 현재 이진 로그 파일의 GTID 세트는 mysql.gtid_executed 테이블에 저장됩니다.
+# 이러한 상황이 발생하지 않은 비정상 종료 후 복구 중에 GTID가 이진 로그 파일에서 테이블에 추가됩니다 (이진 로깅이 여전히 사용 가능한 경우).
+# 서버를 다시 시작하기 위해 이진 로깅을 사용하지 않으면 서버가 이진 로그 파일에 액세스하여 GTID를 복구 할 수 없으므로 복제를 시작할 수 없습니다.
+# 정상적인 종료 후 이진 로깅을 안전하게 비활성화 할 수 있습니다.
+#
+# * Apply Option
+# log-bin=directory/file_name
+# 
+# --------------------------------------------
+# 
+# @ --binlog-do-db=db_name
+# 
+# Property : Value
+# Command-Line Format : --binlog-do-db=name
+# Type : String
+# 
+# 이 옵션은 --replicate-do-db가 복제에 영향을주는 방식과 유사한 방식으로 이진 로깅에 영향을줍니다.
+# 
+# 이 옵션의 효과는 --replicate-do-db의 효과가 명령문 기반 또는 행 기반 복제의 영향 여부와 같은 방식으로 명령문 기반 또는 행 기반 로깅 형식의 사용 여부에 따라 다릅니다. 사용하다.
+# 주어진 명령문을 기록하는 데 사용 된 형식이 binlog_format 값으로 표시되는 형식과 반드시 ​​같을 필요는 없습니다.
+# 예를 들어 CREATE TABLE 및 ALTER TABLE과 같은 DDL 문은 유효한 로깅 형식에 관계없이 항상 문으로 기록되므로 --binlog-do-db에 대한 다음 문 기반 규칙은 항상 문이 기록됩니다.
+# 
+# ++ Statement-based logging.
+# 이 명령문 만 기본 데이터베이스 (즉, USE에서 선택한 데이터베이스)가 db_name 인 2 진 로그에 기록됩니다.
+# 둘 이상의 데이터베이스를 지정하려면 각 데이터베이스에 대해이 옵션을 여러 번 사용하십시오.
+# 그러나 그렇게하면 다른 데이터베이스 (또는 데이터베이스가없는)가 선택된 동안 UPDATE some_db.some_table SET foo = 'bar'와 같은 데이터베이스 간 명령문이 기록되지 않습니다.
+# 
+# 경고
+# 여러 데이터베이스를 지정하려면이 옵션의 여러 인스턴스를 사용해야합니다. 데이터베이스 이름에는 쉼표가 포함될 수 있으므로 쉼표로 구분 된 목록을 제공하면 목록이 단일 데이터베이스의 이름으로 취급됩니다.
+# 
+# 명령문 기반 로깅을 사용할 때 예상대로 작동하지 않는 예 : 서버가 --binlog-do-db = sales로 시작되고 다음 명령문을 발행하면 UPDATE 문이 로깅되지 않습니다.
+# USE prices;
+# UPDATE sales.january SET amount=amount+1000;
+# 이 "기본 데이터베이스 만 검사"동작의 주된 이유는 명령문만으로는 복제 여부를 알기가 어렵 기 때문입니다
+# (예 : 다중 테이블 DELETE 문 또는 다중 테이블 UPDATE 문을 사용하는 경우) 여러 데이터베이스에서).
+# 필요하지 않은 경우 모든 데이터베이스가 아닌 기본 데이터베이스 만 확인하는 것이 더 빠릅니다.
+# 
+# 옵션을 설정할 때 데이터베이스가 지정되지 않았더라도 지정된 데이터베이스가 복제 될 때 자명하지 않을 수있는 다른 경우가 발생합니다.
+# 서버가 --binlog-do-db = sales로 시작되면 --binlog-do-db를 설정할 때 가격이 포함되지 않은 경우에도 다음 UPDATE 문이 기록됩니다.
+# USE sales;
+# UPDATE prices.discounts SET percentage = percentage + 10;
+# UPDATE 문이 발행 될 때 sales가 기본 데이터베이스이므로 UPDATE가 로그됩니다.
+# 
+# ++ Row-based logging.
+# 로깅은 데이터베이스 db_name으로 제한됩니다. db_name에 속하는 테이블의 변경 사항 만 기록됩니다. 기본 데이터베이스는 이에 영향을 미치지 않습니다.
+# 서버가 --binlog-do-db = sales로 시작되고 행 기반 로깅이 적용되고 다음 명령문이 실행된다고 가정하십시오.
+# USE prices;
+# UPDATE sales.february SET amount=amount+100;
+# 
+# 판매 데이터베이스의 2 월 테이블에 대한 변경 사항은 UPDATE 문에 따라 기록됩니다. 이것은 USE 문이 발행되었는지 여부에 관계없이 발생합니다.
+# 그러나 행 기반 로깅 형식 및 --binlog-do-db = sales를 사용하는 경우 다음 UPDATE에 의한 변경 사항은 기록되지 않습니다.
+# USE prices;
+# UPDATE prices.march SET amount=amount-25;
+# USE 가격 명세서가 USE 판매로 변경 되더라도 UPDATE 문의 효과는 여전히 이진 로그에 기록되지 않습니다.
+# 
+# 행 기반 로깅과 달리 명령문 기반 로깅에 대한 --binlog-do-db 처리의 또 다른 중요한 차이점은 여러 데이터베이스를 참조하는 명령문과 관련하여 발생합니다.
+# 서버가 --binlog-do-db = db1로 시작되고 다음 명령문이 실행된다고 가정하십시오.
+# USE db1;
+# UPDATE db1.table1 SET col1 = 10, db2.table2 SET col2 = 20;
+# 
+# 명령문 기반 로깅을 사용하는 경우 두 테이블에 대한 업데이트가 이진 로그에 기록됩니다. 그러나 행 기반 형식을 사용하는 경우 table1에 대한 변경 사항 만 기록됩니다.
+# table2가 다른 데이터베이스에 있으므로 UPDATE에 의해 변경되지 않습니다. 이제 USE db1 문 대신 USE db4 문이 사용되었다고 가정하십시오.
+# USE db4;
+# UPDATE db1.table1 SET col1 = 10, db2.table2 SET col2 = 20;
+# 이 경우 명령문 기반 로깅을 사용할 때 UPDATE 문이 2 진 로그에 기록되지 않습니다.
+# 그러나 행 기반 로깅을 사용하는 경우 table1에 대한 변경 사항은 기록되지만 table2에 대한 변경 내용은 기록되지 않습니다.
+# 즉, --binlog-do-db로 명명 된 데이터베이스의 테이블에 대한 변경 사항 만 기록되며 기본값 선택 데이터베이스는이 동작에 영향을 미치지 않습니다.
+#
+# * Apply Option
+# binlog-do-db=db_name
+# 
+# --------------------------------------------
+# 
+# @ --binlog-ignore-db=db_name
+# 
+# Property : Value
+# Command-Line Format : --binlog-ignore-db=name
+# Type : String
+# 
+# 이 옵션은 --replicate-ignore-db가 복제에 영향을주는 방식과 유사한 방식으로 이진 로깅에 영향을줍니다.
+# 
+# 이 옵션의 효과는 --replicate-ignore-db의 효과가 명령문 기반 또는 행 기반 복제의 영향 여부와 같은 방식으로 명령문 기반 또는 행 기반 로깅 형식의 사용 여부에 따라 다릅니다. 사용하다.
+# 주어진 명령문을 기록하는 데 사용 된 형식이 binlog_format 값으로 표시되는 형식과 반드시 ​​같을 필요는 없습니다.
+# 예를 들어 CREATE TABLE 및 ALTER TABLE과 같은 DDL 문은 유효한 로깅 형식에 관계없이 항상 문으로 기록되므로 --binlog-ignore-db에 대한 다음 문 기반 규칙은 항상 문이 기록됩니다.
+# 
+# ++ Statement-based logging.
+# 기본 데이터베이스 (USE에서 선택한 데이터베이스)가 db_name 인 명령문은 서버가 로그하지 않도록 지시합니다.
+# 
+# MySQL 5.7.2 이전에는이 ​​옵션으로 기본 데이터베이스가 지정되지 않은 경우 (즉, SELECT DATABASE ()가 NULL을 리턴 한 경우) 완전한 테이블 이름을 포함하는 명령문이 기록되지 않았습니다.
+# MySQL 5.7.2 이상에서 기본 데이터베이스가없는 경우 --binlog-ignore-db 옵션이 적용되지 않으며 이러한 명령문은 항상 기록됩니다. (버그 # 11829838, 버그 # 60188)
+# 
+# ++ Row-based format.
+# 데이터베이스 db_name의 테이블에 업데이트를 로그하지 않도록 서버에 지시합니다. 현재 데이터베이스는 영향을 미치지 않습니다.
+# 
+# 명령문 기반 로깅을 사용할 때 다음 예제는 예상대로 작동하지 않습니다. 서버가 --binlog-ignore-db = sales로 시작되고 다음 명령문을 발행한다고 가정하십시오.
+# USE prices;
+# UPDATE sales.january SET amount=amount+1000;
+# --binlog-ignore-db는 기본 데이터베이스 (USE 문에 의해 결정됨)에만 적용되므로 UPDATE 문은 이러한 경우에 기록됩니다.
+# 판매 데이터베이스가 명령문에 명시 적으로 지정되었으므로 명령문이 필터링되지 않았습니다.
+# 그러나 행 기반 로깅을 사용하는 경우 UPDATE 문의 효과가 2 진 로그에 기록되지 않으므로 sales.january 테이블에 대한 변경 사항이 기록되지 않습니다.
+# 이 경우 --binlog-ignore-db = sales는 이진 로깅을 위해 마스터의 판매 데이터베이스 복사본에있는 테이블에 대한 모든 변경 사항이 무시되도록합니다.
+# 
+# 무시할 둘 이상의 데이터베이스를 지정하려면 각 데이터베이스에 대해이 옵션을 여러 번 사용하십시오.
+# 데이터베이스 이름에는 쉼표가 포함될 수 있으므로 쉼표로 구분 된 목록을 제공하면 목록이 단일 데이터베이스의 이름으로 취급됩니다.
+# 
+# 데이터베이스 간 업데이트를 사용하고 있고 이러한 업데이트를 기록하지 않으려면이 옵션을 사용하지 마십시오.
+#
+# * Apply Option
+# binlog-ignore-db=db_name
+# 
+# --------------------------------------------
+# 
+# @ binlog_cache_size
+# 
+# Property : Value
+# Command-Line Format : --binlog-cache-size=#
+# System Variable : binlog_cache_size
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 32768
+# Minimum Value : 4096
+# Maximum Value : (64-bit platforms) - 18446744073709551615
+# Maximum Value : (32-bit platforms) - 4294967295
+# 
+# 
+# 보관할 캐시 크기는 트랜잭션 중에 이진 로그에 대한 변경 사항입니다. 서버가 트랜잭션 저장 엔진을 지원하고 서버에서
+# 이진 로그가 활성화 된 경우 (--log-bin 옵션) 각 이진 로그 캐시가 각 클라이언트에 할당됩니다.
+# 대규모 트랜잭션을 자주 사용하는 경우이 캐시 크기를 늘려 성능을 향상시킬 수 있습니다.
+# Binlog_cache_use 및 Binlog_cache_disk_use 상태 변수는이 변수의 크기를 조정하는 데 유용 할 수 있습니다. 5.4.4 절.“이진 로그”를 참조하십시오.
+# 
+# binlog_cache_size는 트랜잭션 캐시의 크기 만 설정합니다. 명령문 캐시의 크기는 binlog_stmt_cache_size 시스템 변수에 의해 관리됩니다.
+#
+# * Apply Option
+# binlog_cache_size=32768
+# 
+# --------------------------------------------
+# 
+# @ binlog_checksum
+# 
+# Command-Line Format : --binlog-checksum=name
+# System Variable : binlog_checksum
+# Scope : Global
+# Dynamic : Yes
+# Type : String
+# Default Value : CRC32
+# Valid Values : NONE, CRC32
+# 
+# 이 변수를 사용하면 소스가 바이너리 로그의 각 이벤트에 대한 체크섬을 작성합니다. binlog_checksum은 NONE (비활성화 됨) 및 CRC32 값을 지원합니다.
+# 기본값은 CRC32입니다. 트랜잭션 내에서 binlog_checksum의 값을 변경할 # 수 없습니다.
+# 
+# binlog_checksum이 비활성화 된 경우 (값 NONE) 서버는 각 이벤트에 대한 이벤트 길이 (체크섬 아님)를 쓰고 확인하여 완전한 이벤트 만 바이너리 로그에 기록하고 있는지 확인합니다.
+# 
+# 이 변수의 값을 변경하면 바이너리 로그가 회전됩니다. 체크섬은 항상 전체 이진 로그 파일에 기록되고 하나의 일부에만 기록되지 않습니다.
+# 
+# 소스에서이 변수를 복제본이 인식 할 수없는 값으로 설정하면 복제본이 자체 binlog_checksum 값을 NONE으로 설정하고 오류와 함께 복제를 중지합니다
+# (버그 # 13553750, 버그 # 61096) 이전 복제본과의 하위 호환성이 우려되는 # 경우 값을 명시 적으로 NONE으로 설정할 수 있습니다.
+# 
+# * Apply Option
+# binlog_checksum=CRC32
+# 
+# --------------------------------------------
+# 
+# @ binlog_direct_non_transactional_updates
+# 
+# Property : Value
+# Command-Line Format : --binlog-direct-non-transactional-updates[={OFF|ON}]
+# System Variable : binlog_direct_non_transactional_updates
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : OFF
+# 
+# 동시성 문제로 인해 트랜잭션에 트랜잭션 테이블과 비 트랜잭션 테이블 모두에 대한 업데이트가 포함되어 있으면 슬레이브가 일치하지 않을 수 있습니다.
+# MySQL은 트랜잭션이 아닌 명령문을 트랜잭션 캐시에 작성하여 커밋시 플러시함으로써 이러한 명령문 간의 인과 관계를 유지하려고합니다.
+# 그러나 트랜잭션을 대신하여 비 트랜잭션 테이블에 대한 수정이 이진 로그에 즉시 기록되지 않을 수 있으므로 다른 연결에 즉시 표시 될 때 문제가 발생합니다.
+# 
+# binlog_direct_non_transactional_updates 변수는이 문제에 대한 가능한 해결 방법을 제공합니다.
+# 기본적으로이 변수는 비활성화되어 있습니다. binlog_direct_non_transactional_updates를 사용하면
+# 트랜잭션이 아닌 테이블에 대한 업데이트가 트랜잭션 캐시가 아닌 이진 로그에 직접 기록됩니다.
+# 
+# binlog_direct_non_transactional_updates는 명령문 기반 2 진 로깅 형식을 사용하여 복제 된 명령문에 대해서만 작동합니다.
+# 즉, binlog_format의 값이 STATEMENT이거나 binlog_format이 MIXED이고 지정된 명령문이 명령문 기반 형식을 사용하여 복제되는 경우에만 작동합니다.
+# 이 변수는 이진 로그 형식이 ROW이거나 binlog_format이 MIXED로 설정되어 있고 주어진 명령문이 행 기반 형식을 사용하여 복제 된 경우에는 효과가 없습니다.
+# 
+# 중요사항
+# 이 변수를 사용 가능하게하기 전에 트랜잭션 테이블과 비 트랜잭션 테이블 사이에 종속성이 없는지 확인해야합니다.
+# 이러한 종속성의 예로는 INSERT INTO myisam_table SELECT * FROM innodb_table 문이 있습니다.
+# 그렇지 않으면 그러한 진술로 인해 슬레이브가 마스터에서 벗어날 수 있습니다.
+# 
+# 이진 로그 형식이 ROW 또는 MIXED이면이 변수가 적용되지 않습니다.
+#
+# * Apply Option
+# binlog_direct_non_transactional_updates=OFF
+# 
+# --------------------------------------------
+# 
+# @ binlog_error_action
+# 
+# Property : Value
+# Command-Line Format : --binlog-error-action[=value]
+# System Variable : binlog_error_action
+# Scope : Global
+# Dynamic : Yes
+# Type : Enumeration
+# Default Value : ABORT_SERVER
+# Valid Values  : IGNORE_ERROR, ABORT_SERVER
+# 
+# 서버가 이진 로그에 쓰거나, 플러시 또는 동기화 할 수없는 등의 오류가 발생할 때 발생하는 상황을 제어하여 마스터의 이진 로그가 일치하지 않고 복제 슬레이브가 동기화를 잃을 수 있습니다.
+# 
+# MySQL 5.7.7 이상에서이 변수의 기본값은 ABORT_SERVER이며, 이진 로그에 오류가 발생할 때마다 서버가 로깅을 중지하고 종료합니다.
+# 재시작시 예기치 않은 서버 정지의 경우와 같이 복구가 진행됩니다 (16.3.2 절“예기치 않은 복제 슬레이브 중지 처리”참조).
+# 
+# binlog_error_action이 IGNORE_ERROR로 설정되면 서버에 이러한 오류가 발생하면 진행중인 트랜잭션이 계속되고 오류가 기록 된 후 로깅이 중지되고 업데이트가 계속 수행됩니다.
+# 이진 로깅을 재개하려면 log_bin을 다시 활성화해야합니다. 서버를 다시 시작해야합니다. 이 설정은 이전 버전의 MySQL과 호환됩니다.
+# 
+# 이전 릴리스에서이 변수의 이름은 binlogging_impossible_mode입니다.
+#
+# * Apply Option
+# binlog_error_action=ABORT_SERVER
+# 
+# --------------------------------------------
+# 
+# @ binlog_format
+# 
+# Property : Value
+# Command-Line Format : --binlog-format=format
+# System Variable : binlog_format
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Enumeration
+# Default Value : ROW
+# Valid Values  : ROW, STATEMENT, MIXED
+# 
+# 이 변수는 이진 로깅 형식을 설정하며 STATEMENT, ROW 또는 MIXED 중 하나 일 수 있습니다. 16.2.1 절.“복제 형식”을 참조하십시오.
+# 
+# binlog_format은 일부 조건 하에서 런타임에이 변수를 변경하는 것이 불가능하거나 나중에 설명하는 것처럼 복제에 실패하는 경우를 제외하고 시작 또는 런타임에 설정할 수 있습니다.
+# 
+# MySQL 5.7.7 이전의 기본 형식은 STATEMENT입니다. MySQL 5.7.7 이상에서 기본값은 ROW입니다.
+# 예외 : NDB 클러스터에서 기본값은 MIXED입니다. NDB 클러스터에서는 명령문 기반 복제가 지원되지 않습니다.
+# 
+# 이 시스템 변수의 세션 값 설정은 제한된 조작입니다.
+# 세션 사용자에게는 제한된 세션 변수를 설정하기에 충분한 권한이 있어야합니다. 5.1.8.1 절.“시스템 변수 권한”을 참조하십시오.
+# 
+# 이 변수에 대한 변경 사항이 적용되는시기와 영향이 지속되는 시간을 결정하는 규칙은 다른 MySQL 서버 시스템 변수와 동일합니다.
+# 자세한 정보는 13.7.4.1 절.“변수 할당을위한 SET 구문”을 참조하십시오.
+# 
+# MIXED를 지정하면 행 기반 복제만으로 올바른 결과를 얻을 수있는 경우를 제외하고 명령문 기반 복제가 사용됩니다.
+# 예를 들어, 명령문에 사용자 정의 함수 (UDF) 또는 UUID () 함수가 포함 된 경우에 발생합니다.
+# 
+# 각 이진 로깅 형식이 설정 될 때 저장 프로그램 (저장 프로 시저 및 기능, 트리거 및 이벤트)이 처리되는 방법에 대한 자세한 내용은
+# 23.7 절.“저장된 프로그램 이진 로깅”을 참조하십시오.
+# 
+# 런타임에 복제 형식을 전환 할 수없는 경우 예외가 있습니다.
+# + 저장된 기능 또는 트리거 내에서.
+# + 세션이 현재 행 기반 복제 모드이고 열려있는 임시 테이블이있는 경우.
+# + 거래 내에서.
+# 
+# 이 경우 형식을 전환하려고하면 오류가 발생합니다.
+# 
+# 복제 마스터에서 로깅 형식을 변경해도 복제 슬레이브가 로깅 형식을 일치하도록 변경하지 않습니다.
+# 복제가 진행되는 동안 복제 형식을 전환하면 복제 슬레이브에 이진 로깅이 활성화되어 있으면
+# 마스터가 ROW 또는 MIXED 형식 로깅을 사용하는 동안 STATEMENT 형식 로깅을 사용하여 슬레이브에 문제가 발생할 수 있습니다.
+# 복제 슬레이브는 자체 이진 로그에 사용하기 위해 ROW 로깅 형식으로 수신 된 이진 로그 항목을 STATEMENT 형식으로 변환 할 수 없으므로이 상황으로 인해 복제가 실패 할 수 있습니다.
+# 자세한 내용은 5.4.4.2 절“이진 로그 형식 설정”을 참조하십시오.
+# 
+# The binary log format affects the behavior of the following server options:
+# 
+# + --replicate-do-db
+# + --replicate-ignore-db
+# + --binlog-do-db
+# + --binlog-ignore-db
+# 
+# 이러한 효과는 개별 옵션에 대한 설명에서 자세히 설명합니다.
+#
+# * Apply Option
+# binlog_format=ROW
+# 
+# --------------------------------------------
+# 
+# @ binlog_group_commit_sync_delay
+# 
+# Property : Value
+# Command-Line Format : --binlog-group-commit-sync-delay=#
+# System Variable : binlog_group_commit_sync_delay
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 0
+# Minimum Value : 0
+# Maximum Value : 1000000
+# 
+# 이진 로그 파일을 디스크에 동기화하기 전에 이진 로그 커밋이 대기하는 시간 (마이크로 초)을 제어합니다.
+# 기본적으로 binlog_group_commit_sync_delay는 0으로 설정되며 이는 지연이 없음을 의미합니다.
+# binlog_group_commit_sync_delay를 마이크로 초 지연으로 설정하면 더 많은 트랜잭션을 한 번에 디스크에 동기화하여
+# 더 큰 그룹이 그룹당 더 적은 시간 단위를 필요로하기 때문에 트랜잭션 그룹을 커밋하는 전체 시간을 줄입니다.
+# 
+# sync_binlog = 0 또는 sync_binlog = 1이 설정되면 binlog_group_commit_sync_delay에 의해 지정된 지연이 동기화 전
+# (또는 진행 전 sync_binlog = 0의 경우)의 모든 이진 로그 커밋 그룹에 적용됩니다.
+# sync_binlog가 1보다 큰 값 n으로 설정되면 n 개의 이진 로그 커밋 그룹마다 지연이 적용됩니다.
+# 
+# binlog_group_commit_sync_delay를 설정하면 복제 슬레이브가 있거나 장애 조치 후에있을 수 있는 모든 서버에서
+# 병렬 커밋 트랜잭션의 수가 증가하여 복제 슬레이브에서 병렬 실행이 증가 할 수 있습니다.
+# 이 효과의 이점을 얻으려면 슬레이브 서버에 slave_parallel_type = LOGICAL_CLOCK이 설정되어 있어야하며
+# binlog_transaction_dependency_tracking = COMMIT_ORDER도 설정하면 효과가 더 중요합니다.
+# binlog_group_commit_sync_delay 설정을 조정할 때 마스터 처리량과 슬레이브 처리량을 모두 고려해야합니다.
+# 
+# binlog_group_commit_sync_delay를 설정하면 이진 로그가있는 서버 (마스터 또는 슬레이브)의 이진 로그에 대한 fsync () 호출 수를 줄일 수도 있습니다.
+# 
+# binlog_group_commit_sync_delay를 설정하면 서버에서 트랜잭션 대기 시간이 증가하여 클라이언트 응용 프로그램에 영향을 줄 수 있습니다.
+# 또한 동시 작업이 많은 경우 지연이 경합을 증가시켜 처리량을 줄일 수 있습니다. 일반적으로 지연 설정의 이점은 단점보다 중요하지만 최적의 설정을 결정하려면 항상 조정을 수행해야합니다.
+#
+# * Apply Option
+# binlog_group_commit_sync_delay=0
+# 
+# --------------------------------------------
+# 
+# @ binlog_group_commit_sync_no_delay_count
+# 
+# Property : Value
+# Command-Line Format : --binlog-group-commit-sync-no-delay-count=#
+# System Variable : binlog_group_commit_sync_no_delay_count
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 0
+# Minimum Value : 0
+# Maximum Value : 1000000
+# 
+# binlog_group_commit_sync_delay에 지정된대로 현재 지연을 중단하기 전에 대기 할 최대 트랜잭션 수입니다.
+# binlog_group_commit_sync_delay를 0으로 설정하면이 옵션이 적용되지 않습니다.
+#
+# * Apply Option
+# binlog_group_commit_sync_no_delay_count=0
+# 
+# --------------------------------------------#
+#
+# @ binlog_max_flush_queue_time
+#
+# Command-Line Format : --binlog-max-flush-queue-time=#
+# Deprecated : Yes
+# System Variable : binlog_max_flush_queue_time
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 0
+# Minimum Value : 0
+# Maximum Value : 100000# 
+#
+# 이전에는 그룹 커밋을 진행하기 전에 플러시 큐에서 트랜잭션을 계속 읽는 시간을 마이크로 초 단위로 제어했습니다. MySQL 5.7에서는이 변수가 더 이상 효과가 없습니다.# 
+#
+# binlog_max_flush_queue_time은 MySQL 5.7.9부터 더 이상 사용되지 않으며 향후 MySQL 릴리스에서 최종 제거되도록 표시됩니다.# 
+#
+# * Apply Option
+# binlog_max_flush_queue_time=0
+# 
+
+# --------------------------------------------
+# 
+# @ binlog_order_commits
+# 
+# Property : Value
+# Command-Line Format : --binlog-order-commits[={OFF|ON}]
+# System Variable : binlog_order_commits
+# Scope : Global
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : ON
+# 
+# 이 변수가 복제 마스터 (기본값)에서 활성화되면 스토리지 엔진에 발행 된 트랜잭션 커밋 명령이 단일 스레드에서 직렬화되므로 트랜잭션은 항상 이진 로그에 기록 된 순서와 동일한 순서로 커밋됩니다.
+# 이 변수를 비활성화하면 여러 스레드를 사용하여 트랜잭션 커밋 명령을 실행할 수 있습니다.
+# 이진 로그 그룹 커밋과 함께 사용하면 단일 트랜잭션의 커밋 속도가 처리량에 병목 현상이 발생하지 않도록하여 성능이 향상 될 수 있습니다.
+# 
+# 트랜잭션은 관련된 모든 스토리지 엔진이 트랜잭션을 커밋 할 준비가되었음을 확인한 시점에 이진 로그에 기록됩니다.
+# 이진 로그 그룹 커밋 논리는 이진 로그 쓰기가 발생한 후 트랜잭션 그룹을 커밋합니다.
+# binlog_order_commits가 비활성화되면이 프로세스에 여러 스레드가 사용되므로 커밋 그룹의 트랜잭션이 이진 로그의 순서와 다른 순서로 커밋 될 수 있습니다.
+# (단일 클라이언트의 트랜잭션은 항상 시간 순서대로 커밋됩니다.)
+# 많은 경우에 별도의 트랜잭션에서 수행되는 작업이 일관된 결과를 생성해야하기 때문에 중요하지 않으며, 그렇지 않은 경우 단일 트랜잭션을 대신 사용해야합니다.
+# 
+# 마스터 및 멀티 스레드 복제 슬레이브의 트랜잭션 기록이 동일하게 유지되도록하려면 slave_preserve_commit_order = 1을 설정하십시오.
+#
+# * Apply Option
+# binlog_order_commits=ON
+# 
+# --------------------------------------------
+# 
+# @ binlog_row_image
+# 
+# Property : Value
+# Command-Line Format : --binlog-row-image=image_type
+# System Variable : binlog_row_image
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Enumeration
+# Default Value : full
+# Valid Values	
+# full (Log all columns)
+# minimal (Log only changed columns, and columns needed to identify rows)
+# noblob (Log all columns, except for unneeded BLOB and TEXT columns)
+# 
+# MySQL 행 기반 복제의 경우이 변수는 행 이미지가 이진 로그에 기록되는 방식을 결정합니다.
+# 
+# MySQL 행 기반 복제에서 각 행 변경 이벤트에는 업데이트 할 행을 검색 할 때 열이 일치하는 "이전"이미지와 변경 사항이 포함 된 "이후"이미지의 두 이미지가 포함됩니다.
+# 일반적으로 MySQL은 이전 및 이후 이미지 모두에 대해 전체 행 (즉, 모든 열)을 기록합니다.
+# 그러나 두 이미지 모두에 모든 열을 반드시 포함 할 필요는 없으며 실제로 필요한 열만 로깅하여 디스크, 메모리 및 네트워크 사용량을 절약 할 수 있습니다.
+# 
+# 노트
+# 행을 삭제하면 삭제 후 전파 할 변경된 값이 없으므로 이전 이미지 만 기록됩니다. 행을 삽입 할 때 일치하는 기존 행이 없으므로 이후 이미지 만 기록됩니다.
+# 행을 업데이트 할 때만 사전 및 사후 이미지가 필요하며 둘 다 이진 로그에 기록됩니다.
+# 
+# 이전 이미지의 경우 행을 고유하게 식별하는 데 필요한 최소 열 세트 만 기록하면됩니다. 행을 포함하는 테이블에 기본 키가 있으면 기본 키 열만 이진 로그에 기록됩니다.
+# 그렇지 않으면 테이블에 고유 한 키가 있고 모든 열이 NULL이 아닌 경우 고유 키의 열만 기록하면됩니다.
+# (테이블에 기본 열이나 NULL 열이없는 고유 키가없는 경우 모든 열을 이전 이미지에서 사용하고 기록해야합니다.)
+# 이후 이미지에서는 실제로 변경된 열만 기록해야합니다.
+# 
+# binlog_row_image 시스템 변수를 사용하여 서버가 전체 또는 최소 행을 기록하도록 할 수 있습니다. 이 변수는 실제로 다음 목록에 표시된 것처럼 세 가지 가능한 값 중 하나를 사용합니다.
+# + 전체 : 이전 이미지와 이후 이미지 모두에 모든 열을 기록합니다.
+# + 최소 : 변경 될 행을 식별하는 데 필요한 이전 이미지의 열만 기록합니다. SQL 문에 의해 값이 지정되었거나 자동 증가에 의해 생성 된 이후 이미지의 열만 기록하십시오.
+# + noblob : 행을 식별하는 데 필요하지 않거나 변경되지 않은 BLOB 및 TEXT 열을 제외하고 모든 열 (전체와 동일)을 기록하십시오.
+# 
+# 노트
+# 이 변수는 NDB 클러스터에서 지원되지 않습니다. NDB 테이블 로깅에는 영향을 미치지 않습니다.
+# 
+# 기본값은 전체입니다.
+# 
+# 최소 또는 noblob를 사용하는 경우 소스 및 대상 테이블 모두에 대해 다음 조건이 충족되는 경우에만 지정된 테이블에 대해 삭제 및 업데이트가 올바르게 작동합니다.
+# + 모든 열은 반드시 같은 순서로 있어야합니다. 각 열은 다른 테이블의 해당 열과 동일한 데이터 형식을 사용해야합니다.
+# + 테이블은 동일한 기본 키 정의를 가져야합니다.
+# (즉, 테이블은 기본 키의 일부가 아닌 인덱스를 제외하고 테이블과 동일해야합니다.)
+# 
+# 이러한 조건이 충족되지 않으면 대상 테이블의 기본 키 열 값이 삭제 또는 업데이트에 고유 한 일치를 제공하기에 불충분 한 것으로 판명 될 수 있습니다. 이 경우 경고 나 오류가 발생하지 않습니다.
+# 마스터와 슬레이브는 조용히 분기되어 일관성이 떨어집니다.
+# 
+# 이진 로깅 형식이 STATEMENT 인 경우이 변수를 설정해도 효과가 없습니다.
+# binlog_format이 MIXED 인 경우 binlog_row_image 설정은 행 기반 형식을 사용하여 기록 된 변경 사항에 적용되지만이 설정은 명령문으로 기록 된 변경 사항에는 영향을 미치지 않습니다.
+# 
+# 전역 또는 세션 레벨에서 binlog_row_image를 설정해도 내재 된 커미트가 발생하지 않습니다. 이는 트랜잭션에 영향을주지 않고 트랜잭션이 진행되는 동안이 변수를 변경할 수 있음을 의미합니다.
+#
+# * Apply Option
+# binlog_row_image=full
+# 
+# --------------------------------------------
+# 
+# @ binlog_rows_query_log_events
+# 
+# Property : Value
+# Command-Line Format : --binlog-rows-query-log-events[={OFF|ON}]
+# System Variable : binlog_rows_query_log_events
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : OFF
+# 
+# 이 시스템 변수는 행 기반 로깅에만 영향을줍니다. 사용 가능한 경우, 서버는 행 쿼리 로그 이벤트와 같은 정보 로그 이벤트를 2 진 로그에 기록합니다.
+# 이 정보는 행 업데이트에서 재구성 할 수 없을 때 마스터에서 발행 된 원래 쿼리를 얻는 것과 같은 디버깅 및 관련 목적으로 사용될 수 있습니다.
+# 
+# 이러한 정보 이벤트는 일반적으로 이진 로그를 읽는 MySQL 프로그램에서 무시되므로 백업에서 복제하거나 복원 할 때 문제가 발생하지 않습니다.
+# 이를 보려면 mysqlbinlog의 --verbose 옵션을 -vv 또는 --verbose --verbose로 두 번 사용하여 상세 수준을 높이십시오.
+#
+# * Apply Option
+# binlog_rows_query_log_events=OFF
+# 
+# --------------------------------------------
+# 
+# @ binlog_stmt_cache_size
+# 
+# Property : Value
+# Command-Line Format : --binlog-stmt-cache-size=#
+# System Variable : binlog_stmt_cache_size
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 32768
+# Minimum Value : 4096
+# Maximum Value : (64-bit platforms) - 18446744073709551615
+# Maximum Value : (32-bit platforms) - 4294967295
+# 
+# 이 변수는 트랜잭션 중에 발행 된 비 트랜잭션 명령문을 보유하기 위해 2 진 로그의 캐시 크기를 결정합니다.
+# 서버가 트랜잭션 저장 엔진을 지원하고 서버에서 이진 로그가 활성화 된 경우 (--log-bin 옵션) 각 클라이언트에 대해 별도의 이진 로그 트랜잭션 및 명령문 캐시가 할당됩니다.
+# 트랜잭션 중에 큰 비 트랜잭션 문을 자주 사용하는 경우이 캐시 크기를 늘려 성능을 향상시킬 수 있습니다.
+# Binlog_stmt_cache_use 및 Binlog_stmt_cache_disk_use 상태 변수는이 변수의 크기를 조정하는 데 유용 할 수 있습니다. 5.4.4 절.“이진 로그”를 참조하십시오.
+# 
+# binlog_cache_size 시스템 변수는 트랜잭션 캐시의 크기를 설정합니다.
+#
+# * Apply Option
+# binlog_stmt_cache_size=32768
+# 
+# --------------------------------------------
+# 
+# @ binlog_transaction_dependency_tracking
+# 
+# Property : Value
+# Command-Line Format : --binlog-transaction-dependency-tracking=value
+# Introduced	5.7.22
+# System Variable : binlog_transaction_dependency_tracking
+# Scope : Global
+# Dynamic : Yes
+# Type : Enumeration
+# Default Value : COMMIT_ORDER
+# Valid Values  : COMMIT_ORDER, WRITESET, WRITESET_SESSION
+# 
+# 
+# 마스터가 슬레이브의 멀티 스레드 애플리케이터가 병렬로 실행할 수있는 트랜잭션을 결정하기 위해 사용하는 종속성 정보 소스. 이 변수는 다음 목록에 설명 된 세 가지 값 중 하나를 사용할 수 있습니다.
+# + COMMIT_ORDER : 종속성 정보는 마스터의 커밋 타임 스탬프에서 생성됩니다. 이것이 기본값입니다.
+#   이 모드는이 변수가 WRITESET 또는 WRITESET_SESSION 인 경우에도 쓰기 세트가없는 모든 트랜잭션에 사용됩니다.
+# 기본 키가없는 테이블을 업데이트하는 트랜잭션과 외래 키 제약 조건이있는 테이블을 업데이트하는 트랜잭션의 경우에도 마찬가지입니다.
+# + WRITESET : 마스터의 쓰기 세트에서 종속성 정보가 생성되며 다른 튜플을 쓰는 트랜잭션을 병렬화 할 수 있습니다.
+# + WRITESET_SESSION : 종속성 정보는 마스터의 쓰기 세트에서 생성되지만 동일한 세션에서 두 개의 업데이트를 다시 정렬 할 수는 없습니다.
+# WRITESET 및 WRITESET_SESSION 모드는 COMMIT_ORDER 모드에서 반환 된 것보다 새로운 트랜잭션 종속성을 제공하지 않습니다.
+# 
+# transaction_write_set_extraction이 OFF이면이 변수의 값을 COMMIT_ORDER 이외의 값으로 설정할 수 없습니다.
+# binlog_transaction_dependency_tracking의 현재 값이 WRITESET 또는 WRITESET_SESSION 인 경우 transaction_write_set_extraction의 값을 변경할 수 없습니다.
+# 
+# 주어진 행을 변경하기 위해 최신 트랜잭션을 유지하고 점검 할 행 해시 수는 binlog_transaction_dependency_history_size의 값에 의해 결정됩니다.
+#
+# * Apply Option
+# binlog_transaction_dependency_tracking=COMMIT_ORDER
+# 
+# --------------------------------------------
+# 
+# @ binlog_transaction_dependency_history_size
+# 
+# Property : Value
+# Command-Line Format : --binlog-transaction-dependency-history-size=#
+# Introduced	5.7.22
+# System Variable : binlog_transaction_dependency_history_size
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 25000
+# Minimum Value : 1
+# Maximum Value : 1000000
+# 
+# 메모리에 유지되고 주어진 행을 마지막으로 수정 한 트랜잭션을 찾는 데 사용되는 행 해시 수의 상한을 설정합니다.
+# 이 수의 해시에 도달하면 히스토리가 제거됩니다.
+#
+# * Apply Option
+# binlog_transaction_dependency_history_size=25000
+# 
+# --------------------------------------------
+# 
+# binlogging_impossible_mode
+# 
+# Command-Line Format : --binlogging-impossible-mode[=value]
+# Introduced : 5.6.20
+# Deprecated : 5.6.22
+# System Variable : binlogging_impossible_mode
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Enumeration
+# Default Value : IGNORE_ERROR
+# Valid Values : IGNORE_ERROR, ABORT_SERVER
+# 
+# 이 옵션은 더 이상 사용되지 않습니다. 향후 MySQL 릴리스에서 제거 될 것으로 예상됩니다.
+# binlog_error_action 변수를 사용하여 서버가 바이너리 로그에 쓸 수 없을 때 발생하는 상황을 제어합니다.
+#
+# * Apply Option
+# binlogging_impossible_mode=IGNORE_ERROR
+# 
+# --------------------------------------------
+# 
+# @ expire_logs_days
+# 
+# Property : Value
+# Command-Line Format : --expire-logs-days=#
+# System Variable : expire_logs_days
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 0
+# Minimum Value : 0
+# Maximum Value : 99
+# 
+# 자동 이진 로그 파일 제거 일 수입니다. 기본값은 0이며 "자동 제거 없음"을 의미합니다. 시작시 및 이진 로그를 비울 때 가능한 제거가 발생합니다.
+# 5.4 절.“MySQL 서버 로그”에 표시된대로 로그 플러시가 발생합니다.
+# 
+# 이진 로그 파일을 수동으로 제거하려면 PURGE BINARY LOGS 문을 사용하십시오. 13.4.1.1 절.“PURGE BINARY LOGS 문”을 참조하십시오.
+#
+# * Apply Option
+# expire_logs_days=0
+# 
+# 
+# --------------------------------------------
+# 
+# @ log_bin
+# 
+# Property : Value
+# System Variable : log_bin
+# Scope : Global
+# Dynamic : No
+# Type : Boolean
+# 
+# 이진 로그 사용 여부입니다. --log-bin 옵션이 사용되면이 변수의 값은 ON입니다. 그렇지 않으면 OFF입니다.
+# 이 변수는 이진 로깅 상태에 대해서만보고합니다 (활성화 또는 비활성화). 실제로 --log-bin이 설정된 값은보고하지 않습니다.
+# 
+# 5.4.4 절.“이진 로그”를 참조하십시오.
+#
+# * Apply Option
+# log_bin=off
+# 
+# --------------------------------------------
+# 
+# @ log_bin_basename
+# 
+# Property : Value
+# System Variable : log_bin_basename
+# Scope : Global
+# Dynamic : No
+# Type : File name
+# 
+# --log-bin server 옵션으로 설정할 수있는 이진 로그 파일의 기본 이름과 경로를 유지합니다.
+# MySQL 5.7에서 기본 이름은 접미사 -bin을 가진 호스트 컴퓨터의 이름입니다. 기본 위치는 데이터 디렉토리입니다.
+#
+# * Apply Option
+# log_bin_basename=log_bin_basename
+# 
+# --------------------------------------------
+# 
+# @ log_bin_index
+# 
+# Property : Value
+# Command-Line Format : --log-bin-index=file_name
+# System Variable : log_bin_index
+# Scope : Global
+# Dynamic : No
+# Type : File name
+# 
+# --log-bin-index 서버 옵션으로 설정할 수있는 이진 로그 인덱스 파일의 기본 이름과 경로를 유지합니다.
+#
+# * Apply Option
+# log_bin_index=file_name
+# 
+# --------------------------------------------
+# 
+# @ log_bin_trust_function_creators
+# 
+# Property : Value
+# Command-Line Format : --log-bin-trust-function-creators[={OFF|ON}]
+# System Variable : log_bin_trust_function_creators
+# Scope : Global
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : OFF
+# 
+# 
+# 이 변수는 이진 로깅이 활성화 된 경우에 적용됩니다. 안전하지 않은 이벤트가 2진 로그에 기록되도록하는 저장된 함수를 작성하지 않도록 저장된 함수 작성자를 신뢰할 수 있는지 여부를 제어합니다.
+# 0 (기본값)으로 설정하면 CREATE ROUTINE 또는 ALTER ROUTINE 권한 외에 SUPER 권한이없는 한 저장된 기능을 만들거나 변경할 수 없습니다.
+# 0으로 설정하면 함수가 DETERMINISTIC 특성 또는 READS SQL DATA 또는 NO SQL 특성으로 선언되어야한다는 제한 사항이 적용됩니다.
+# 변수가 1로 설정되면 MySQL은 저장된 함수 생성에 대해 이러한 제한을 시행하지 않습니다. 이 변수는 트리거 생성에도 적용됩니다. 23.7 절.“저장된 프로그램 이진 로깅”을 참조하십시오.
+#
+# * Apply Option
+# log_bin_trust_function_creators=OFF
+# 
+# --------------------------------------------
+# 
+# @ log_bin_use_v1_row_events
+# 
+# Property : Value
+# Command-Line Format : --log-bin-use-v1-row-events[={OFF|ON}]
+# System Variable : log_bin_use_v1_row_events
+# Scope : Global
+# Dynamic : No
+# Type : Boolean
+# Default Value : OFF
+# 
+# 버전 2 이진 로깅이 사용 중인지 여부 이 변수가 0 (기본값, 사용 안함)이면 버전 2 2 진 로그 이벤트가 사용 중입니다.
+# 이 변수가 1 (활성화) 인 경우, 서버는 버전 1 로깅 이벤트 (이전 릴리스에서 사용 된 유일한 이진 로그 이벤트 버전)를 사용하여
+# 이진 로그를 작성하므로 이전 슬레이브에서 읽을 수있는 이진 로그를 생성합니다.
+# 
+# MySQL 5.7은 기본적으로 버전 2 이진 로그 행 이벤트를 사용합니다. 그러나 MySQL 5.6.6 이전의 MySQL Server 릴리스에서는 버전 2 이벤트를 읽을 수 없습니다.
+# log_bin_use_v1_row_events를 활성화하면 mysqld는 버전 1 로깅 이벤트를 사용하여 이진 로그를 작성합니다.
+# 
+# 이 변수는 런타임시 읽기 전용입니다. 버전 1 및 버전 2 이진 이벤트 이진 로깅간에 전환하려면 서버 시작시 log_bin_use_v1_row_events를 설정해야합니다.
+# 
+# NDB 클러스터 복제의 업그레이드를 수행 할 때를 제외하고, log_bin_use_v1_row_events는 NDB $EPOCH_TRANS()를
+# 충돌 감지 기능으로 사용하여 복제 충돌 감지 및 해결을 설정할 때 주로 중요합니다.
+# 버전 2 이진 로그 행 이벤트가 필요합니다. 따라서이 변수와 --ndb-log-transaction-id는 호환되지 않습니다.
+# 
+# 노트
+# MySQL NDB Cluster 7.5는 기본적으로 버전 2 이진 로그 행 이벤트를 사용합니다.
+# 업그레이드 또는 다운 그레이드를 계획 할 때와 NDB 클러스터 복제를 사용하는 설정을 염두에 두어야합니다.
+# 
+# 자세한 내용은 21.6.11 절“NDB 클러스터 복제 충돌 해결”을 참조하십시오.
+#
+# * Apply Option
+# log_bin_use_v1_row_events=OFF
+# 
+# --------------------------------------------
+# 
+# @ log_builtin_as_identified_by_password
+# 
+# Property : Value
+# Command-Line Format : --log-builtin-as-identified-by-password[={OFF|ON}]
+# System Variable : log_builtin_as_identified_by_password
+# Scope : Global
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : OFF
+# 
+# 이 변수는 사용자 관리 문의 바이너리 로깅에 영향을줍니다. 활성화되면 변수에 다음과 같은 효과가 있습니다.
+# 
+# 내장 인증 플러그인을 포함하는 CREATE USER 문에 대한 이진 로깅은 IDENTIFIED BY PASSWORD 절을 포함하도록 명령문을 재 작성합니다.
+# 
+# SET PASSWORD 문은 ALTER USER 문에 다시 쓰지 않고 SET PASSWORD 문으로 기록됩니다.
+# 
+# 제공된 일반 텍스트 (암호화되지 않은) 암호 대신 암호 해시를 기록하도록 SET PASSWORD 문이 변경되었습니다.
+# 
+# 이 변수를 활성화하면 5.6 및 5.7.6 이전 슬레이브와의 버전 간 복제 및 이진 로그에서이 구문이 필요한 응용 프로그램의 호환성이 향상됩니다.
+#
+# * Apply Option
+# log_builtin_as_identified_by_password=OFF
+# 
+# --------------------------------------------
+# 
+# @ log_slave_updates
+# 
+# Property : Value
+# Command-Line Format : --log-slave-updates[={OFF|ON}]
+# System Variable : log_slave_updates
+# Scope : Global
+# Dynamic : No
+# Type : Boolean
+# Default Value : OFF
+# 
+# 슬레이브 서버가 마스터 서버로부터 수신 한 업데이트를 슬레이브 자체 바이너리 로그에 기록해야하는지 여부
+# 
+# 일반적으로 슬레이브는 마스터 서버에서 수신 한 모든 업데이트를 자체 이진 로그에 기록하지 않습니다.
+# 이 변수를 활성화하면 슬레이브가 SQL 스레드가 수행 한 업데이트를 자체 이진 로그에 기록합니다.
+# 이 옵션을 적용하려면 --log-bin 옵션으로 슬레이브를 시작하여 바이너리 로깅을 활성화해야합니다. 16.1.6 절.“복제 및 이진 로깅 옵션 및 변수”를 참조하십시오.
+# 
+# log_slave_updates는 복제 서버를 연결하려고 할 때 활성화됩니다. 예를 들어이 배열을 사용하여 복제 서버를 설정할 수 있습니다.
+# 
+# A-> B-> C
+# 여기서 A는 슬레이브 B의 마스터 역할을하고 B는 슬레이브 C의 마스터 역할을합니다.이 작업을 수행하려면 B가 마스터이자 슬레이브 여야합니다.
+# 이진 로깅을 활성화하려면 A와 B를 --log-bin으로 시작하고, log_slave_updates를 활성화 한 B는 A에서받은 업데이트가 B에 의해 이진 로그에 기록되도록해야합니다.
+#
+# * Apply Option
+# log_slave_updates=OFF
+# 
+# --------------------------------------------
+# 
+# @ log_statements_unsafe_for_binlog
+# 
+# Property : Value
+# Command-Line Format : --log-statements-unsafe-for-binlog[={OFF|ON}]
+# Introduced	5.7.11
+# System Variable : log_statements_unsafe_for_binlog
+# Scope : Global
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : ON
+# 
+# 오류 1592가 발생하면 생성 된 경고가 오류 로그에 추가되는지 여부를 제어합니다.
+#
+# * Apply Option
+# log_statements_unsafe_for_binlog=ON
+# 
+# --------------------------------------------
+# 
+# @ max_binlog_cache_size
+# 
+# Property : Value
+# Command-Line Format : --max-binlog-cache-size=#
+# System Variable : max_binlog_cache_size
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 18446744073709551615
+# Minimum Value : 4096
+# Maximum Value : 18446744073709551615
+# 
+# 트랜잭션에 이보다 많은 바이트의 메모리가 필요한 경우, 서버는 'max_binlog_cache_size'바이트 이상의 스토리지 오류가 필요한 다중 명령문 트랜잭션을 생성합니다.
+# 최소값은 4096입니다. 가능한 최대 값은 16EB (엑사 바이트)입니다. 권장되는 최대 값은 4GB입니다. 이는 MySQL이 현재 4GB보다 큰 이진 로그 위치에서 작동 할 수 없기 때문입니다.
+# 
+# max_binlog_cache_size는 트랜잭션 캐시의 크기 만 설정합니다. 명령문 캐시의 상한은 max_binlog_stmt_cache_size 시스템 변수에 의해 결정됩니다.
+# 
+# max_binlog_cache_size 세션에 대한 가시성은 binlog_cache_size 시스템 변수의 세션에 대한 가시성과 일치합니다. 즉, 값을 변경하면 값이 변경된 후 시작된 새 세션에만 영향을줍니다.
+#
+# * Apply Option
+# max_binlog_cache_size=18446744073709551615
+# 
+# --------------------------------------------
+# 
+# @ max_binlog_size
+# 
+# Property : Value
+# Command-Line Format : --max-binlog-size=#
+# System Variable : max_binlog_size
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 1073741824
+# Minimum Value : 4096
+# Maximum Value : 1073741824
+# 
+# 이진 로그에 쓰면 현재 로그 파일 크기가이 변수의 값을 초과하면 서버는 이진 로그를 회전시킵니다
+# (현재 파일을 닫고 다음 파일을 엽니 다). 최소값은 4096 바이트입니다. 최대 및 기본값은 1GB입니다.
+# 
+# 트랜잭션은 하나의 청크로 이진 로그에 기록되므로 여러 이진 로그간에 분할되지 않습니다.
+# 따라서 트랜잭션이 크면 max_binlog_size보다 큰 이진 로그 파일이 표시 될 수 있습니다.
+# 
+# max_relay_log_size가 0 인 경우 max_binlog_size 값은 릴레이 로그에도 적용됩니다.
+#
+# * Apply Option
+# max_binlog_size=1073741824
+# 
+# --------------------------------------------
+# 
+# @ max_binlog_stmt_cache_size
+# 
+# Property : Value
+# Command-Line Format : --max-binlog-stmt-cache-size=#
+# System Variable : max_binlog_stmt_cache_size
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 18446744073709547520
+# Minimum Value : 4096
+# Maximum Value : 18446744073709547520
+# 
+# 트랜잭션 내의 비 트랜잭션 명령문에이 바이트 이상의 메모리가 필요한 경우 서버는 오류를 생성합니다.
+# 최소값은 4096입니다. 최대 값 및 기본값은 32 비트 플랫폼에서 4GB이고 64 비트 플랫폼에서 16EB (엑사 바이트)입니다.
+# 
+# max_binlog_stmt_cache_size는 명령문 캐시의 크기 만 설정합니다.
+# 트랜잭션 캐시의 상한은 max_binlog_cache_size 시스템 변수에 의해 독점적으로 관리됩니다.
+#
+# * Apply Option
+# max_binlog_stmt_cache_size=18446744073709547520
+# 
+# --------------------------------------------
+# 
+# @ sync_binlog
+# 
+# Property : Value
+# Command-Line Format : --sync-binlog=#
+# System Variable : sync_binlog
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 1
+# Minimum Value : 0
+# Maximum Value : 4294967295
+# 
+# MySQL 서버가 바이너리 로그를 디스크와 동기화하는 빈도를 제어합니다.
+# + sync_binlog = 0 : MySQL 서버에 의한 이진 로그의 디스크 동기화를 비활성화합니다. 대신, MySQL 서버는 운영 체제에 의존하여 다른 파일에서와 같이 이진 로그를 때때로 디스크로 플러시합니다.
+# 이 설정은 최상의 성능을 제공하지만 정전 또는 운영 체제 충돌시 서버가 이진 로그에 동기화되지 않은 트랜잭션을 커밋했을 수 있습니다.
+# + sync_binlog = 1 : 트랜잭션이 커밋되기 전에 이진 로그를 디스크에 동기화합니다. 이것은 가장 안전한 설정이지만 증가 된 디스크 쓰기 수로 인해 성능에 부정적인 영향을 줄 수 있습니다.
+# 정전 또는 운영 체제 충돌이 발생하면 이진 로그에서 누락 된 트랜잭션은 준비된 상태 일뿐입니다. 이를 통해 자동 복구 루틴이 트랜잭션을 롤백 할 수 있으므로 2 진 로그에서 트랜잭션이 유실되지 않습니다.
+# + sync_binlog = N. 여기서 N은 0 또는 1 이외의 값입니다. 이진 로그는 N 이진 로그 커밋 그룹이 수집 된 후 디스크에 동기화됩니다.
+# 정전 또는 운영 체제 충돌이 발생하면 서버가 이진 로그로 플러시되지 않은 트랜잭션을 커밋했을 수 있습니다. 이 설정은 증가 된 디스크 쓰기 수로 인해 성능에 부정적인 영향을 줄 수 있습니다.
+# 값이 클수록 성능이 향상되지만 데이터 손실 위험이 높아집니다.
+# 
+# 트랜잭션과 함께 InnoDB를 사용하는 복제 설정에서 최대한의 내구성과 일관성을 유지하려면 다음 설정을 사용하십시오.
+# + sync_binlog = 1.
+# + innodb_flush_log_at_trx_commit = 1.
+# 
+# 주의
+# 많은 운영 체제와 일부 디스크 하드웨어는 디스크 비우기 작업을 속입니다. 그들은 플러시가 발생하지 않았지만 mysqld에게 플러시가 발생했다고 말할 수 있습니다.
+# 이 경우 권장 설정으로도 트랜잭션의 내구성을 보장 할 수 없으며 최악의 경우 정전으로 인해 InnoDB 데이터가 손상 될 수 있습니다.
+# SCSI 디스크 컨트롤러 나 디스크 자체에서 배터리 백업 디스크 캐시를 사용하면 파일 플러시 속도가 빨라지고 작업이 더 안전 해집니다. 하드웨어 캐시에서 디스크 쓰기 캐싱을 비활성화 할 수도 있습니다.
+#
+# * Apply Option
+# sync_binlog=1
+# 
+# --------------------------------------------
+# 
+# @ transaction_write_set_extraction
+# 
+# Property : Value
+# Command-Line Format : --transaction-write-set-extraction[=value]
+# System Variable : transaction_write_set_extraction
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Enumeration
+# Default Value : OFF
+# Valid Values  : (≥ 5.7.14) - OFF, MURMUR32, XXHASH64
+# Valid Values  : (≤ 5.7.13) - OFF, MURMUR32
+# 
+# 트랜잭션과 연관된 쓰기를 식별하는 해시를 생성하는 데 사용되는 알고리즘을 정의합니다. 그룹 복제를 사용하는 경우 해시 값은 분산 충돌 감지 및 처리에 사용됩니다.
+# 그룹 복제를 실행하는 64 비트 시스템에서는 불필요한 해시 충돌을 피하여 인증 실패 및 사용자 트랜잭션 롤백을 방지하기 위해이를 XXHASH64로 설정하는 것이 좋습니다.
+# 17.7.1 절“그룹 복제 요구 사항”을 참조하십시오.
+# 
+# 노트
+# binlog_transaction_dependency_tracking이 WRITESET 또는 WRITESET_SESSION으로 설정되면이 변수의 값을 변경할 수 없습니다.
+#
+# * Apply Option
+# transaction_write_set_extraction=OFF
