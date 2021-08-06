@@ -205,4 +205,107 @@
 # concurrent_insert=NEVER
 # 
 # --------------------------------------------
-
+# 
+# @ key_buffer_size
+# 
+# Command-Line Format : --key-buffer-size=#
+# System Variable : key_buffer_size
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 8388608
+# Minimum Value : 8
+# Maximum Value (64-bit platforms) : OS_PER_PROCESS_LIMIT
+# Maximum Value (32-bit platforms) : 4294967295
+# 
+# MyISAM 테이블의 인덱스 블록은 버퍼링되고 모든 스레드에서 공유됩니다. key_buffer_size는 인덱스 블록에 사용되는 버퍼의 크기입니다.
+# 키 버퍼는 키 캐시라고도합니다.
+# 
+# key_buffer_size에 대한 최대 허용 설정은 32 비트 플랫폼에서 4GB-1입니다. 64 비트 플랫폼에는 더 큰 값이 허용됩니다.
+# 사용 가능한 실제 RAM 및 운영 체제 또는 하드웨어 플랫폼에서 부과하는 프로세스 별 RAM 제한에 따라 유효 최대 크기는 더 적을 수 있습니다.
+# 이 변수의 값은 요청 된 메모리 양을 나타냅니다. 내부적으로 서버는이 양까지 가능한 한 많은 메모리를 할당하지만 실제 할당은 더 적을 수 있습니다.
+# 
+# 모든 읽기 및 다중 쓰기에 대해 더 나은 인덱스 처리를 위해 값을 늘릴 수 있습니다.
+# MyISAM 스토리지 엔진을 사용하여 MySQL을 실행하는 것이 주요 기능인 시스템에서는 머신 총 메모리의 25 %가이 변수에 허용되는 값입니다.
+# 그러나 값을 너무 크게 만들면 (예 : 시스템 총 메모리의 50 % 이상) 시스템이 페이징을 시작하고 매우 느려질 수 있습니다.
+# MySQL은 데이터 읽기를 위해 파일 시스템 캐싱을 수행하기 위해 운영 체제에 의존하기 때문에 파일 시스템 캐시를위한 공간을 남겨야합니다.
+# MyISAM 외에도 사용할 수있는 다른 스토리지 엔진의 메모리 요구 사항도 고려해야합니다.
+# 
+# 동시에 많은 행을 쓸 때 속도를 높이려면 LOCK TABLES를 사용하십시오. 8.2.4.1 절.“INSERT 문 최적화”를 참조하십시오.
+# 
+# SHOW STATUS 문을 실행하고 Key_read_requests, Key_reads, Key_write_requests 및 Key_writes 상태 변수를 검사하여 키 버퍼의 성능을 확인할 수 있습니다.
+# (섹션 13.7.5,“SHOW 문”참조) Key_reads / Key_read_requests 비율은 일반적으로 0.01 미만이어야합니다.
+# Key_writes / Key_write_requests 비율은 대부분 업데이트 및 삭제를 사용하는 경우 일반적으로 1에 가깝지만 동시에 많은 행에 영향을
+# 미치는 업데이트를 수행하는 경향이 있거나 DELAY_KEY_WRITE 테이블 옵션을 사용하는 경우 훨씬 더 작을 수 있습니다.
+# 
+# 사용중인 키 버퍼의 비율은 key_blocks_unused 상태 변수 및 key_cache_block_size 시스템 변수에서 사용할 수있는 버퍼 블록 크기와 함께 key_buffer_size를 사용하여 결정할 수 있습니다.
+# 1 - ((Key_blocks_unused * key_cache_block_size) / key_buffer_size)
+# 
+# 키 버퍼의 일부 공간이 관리 구조를 위해 내부적으로 할당되기 때문에이 값은 근사치입니다.
+# 이러한 구조의 오버 헤드 양에 영향을 미치는 요소에는 블록 크기와 포인터 크기가 포함됩니다.
+# 블록 크기가 증가하면 오버 헤드로 인해 손실되는 키 버퍼의 비율이 감소하는 경향이 있습니다.
+# 블록이 클수록 읽기 작업 수가 적어 지지만 (읽기 당 더 많은 키를 얻으므로) 반대로 검사되지 않는 키 읽기가 증가합니다 (블록의 모든 키가 쿼리와 관련이없는 경우).
+# 
+# 여러 개의 MyISAM 키 캐시를 생성 할 수 있습니다. 4GB의 크기 제한은 그룹이 아닌 각 캐시에 개별적으로 적용됩니다. 8.10.2 절.“MyISAM 키 캐시”를 참조하십시오.
+#
+# * Apply Option
+# key_buffer_size=8388608
+#
+# --------------------------------------------
+#
+# @key_cache_age_threshold
+# 
+# Command-Line Format : --key-cache-age-threshold=#
+# System Variable : key_cache_age_threshold
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 300
+# Minimum Value : 100
+# Maximum Value : (64-bit platforms)	18446744073709551615
+# Maximum Value : (32-bit platforms)	4294967295
+# Block Size : 100
+# 
+# This value controls the demotion of buffers from the hot sublist of a key cache to the warm sublist. Lower values cause demotion to happen more quickly. The minimum value is 100. The default value is 300. See Section 8.10.2, “The MyISAM Key Cache”.
+# 
+# 이 값은 키 캐시의 핫 하위 목록에서 warm 하위 목록으로의 버퍼 강등을 제어합니다. 값이 낮 으면 강등이 더 빨리 발생합니다. 최소값은 100입니다. 기본값은 300입니다. 8.10.2 절.“MyISAM 키 캐시”를 참조하십시오.
+# 
+# --------------------------------------------
+# 
+# @ key_cache_block_size
+# 
+# Command-Line Format : --key-cache-block-size=#
+# System Variable : key_cache_block_size
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 1024
+# Minimum Value : 512
+# Maximum Value : 16384
+# Block Size ; 512
+# 
+# 키 캐시에있는 블록의 크기 (바이트)입니다. 기본값은 1024입니다. 8.10.2 절.“MyISAM 키 캐시”를 참조하십시오.
+#
+# * Apply Option
+# key_cache_block_size=1024
+#
+# --------------------------------------------
+# 
+# @ key_cache_division_limit
+# 
+# Command-Line Format : --key-cache-division-limit=#
+# System Variable : key_cache_division_limit
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 100
+# Minimum Value : 1
+# Maximum Value : 100
+# 
+# The division point between the hot and warm sublists of the key cache buffer list. The value is the percentage of the buffer list to use for the warm sublist. Permissible values range from 1 to 100. The default value is 100. See Section 8.10.2, “The MyISAM Key Cache”.
+# 
+# 키 캐시 버퍼 목록의 hot 및 warm 하위 목록 사이의 구분 지점입니다. 값은 warm 하위 목록에 사용할 버퍼 목록의 백분율입니다.
+# 허용되는 값의 범위는 1에서 100까지입니다. 기본값은 100입니다. 8.10.2 절.“MyISAM 키 캐시”를 참조하십시오.
+#
+# * Apply Option
+# key_cache_division_limit=100
