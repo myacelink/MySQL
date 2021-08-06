@@ -9,9 +9,17 @@
 [MySQL System Variable](https://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html)
 
 1. 01.Server-Parameters.txt
-   서버 시스템, Replication, Performance Schema, GTID 관련 파라미터들 정리.
+   MySQL Engine Parameter.
 2. 02.InnoDB-Parameter.txt
-   InnoDB Storage 엔진 관련 파라미터들 정리.
+   InnoDB Storage Engine Parameter
+3. 03.MyISAM_Parameter.txt
+   MyISAM Stoage Engine Parameter
+4. 04.Binary_Log_Parameter
+   Binary Log Parameter
+5. 05.Replication_GTID_Parameter
+   Replication, GTID Parameter
+6. 06.MySQL_default_my_cnf
+   my.cnf initial Parameter
 
 파라미터 사용 방법 및 전체 설명은 다음 URL을 참고합니다.
 
