@@ -1484,19 +1484,21 @@
 # Default Value : 1024
 # Minimum Value : 0
 # Maximum Value : 1048576
-# 정규화 된 명령문 요약 계산을 위해 세션 당 예약 된 최대 메모리 바이트 수입니다. 다이제스트 계산 중에 해당 공간이 사용되면 잘림이 발생합니다.
-# 구문 분석 된 명령문의 더 이상 토큰이 수집되거나 다이제스트 값으로 계산되지 않습니다.
-# 구문 분석 된 토큰의 많은 바이트 후에 만 ​​다른 명령문은 동일한 정규화 된 명령문 다이제스트를 생성하며 비교 또는 집계 통계에 대해 집계 된 경우 동일한 것으로 간주됩니다.
+#
+# 정규화된 명령문 다이제스트 계산을 위해 세션당 예약된 메모리의 최대 바이트 수입니다. 다이제스트 계산 중에 해당 공간이 사용되면 잘림이 발생합니다.
+# 구문 분석된 명령문의 토큰이 더 이상 수집되거나 다이제스트 값으로 계산되지 않습니다. 구문 분석된 토큰의 많은 바이트 후에만 다른 명령문은 동일한 정규화된 명령문 요약을 생성하고 비교하거나 요약 통계를 위해 집계되는 경우 동일한 것으로 간주됩니다.
 # 
-# max_digest_length 값을 줄이면 메모리 사용이 줄어들지 만 더 많은 명령문의 다이제스트 값이 끝에서만 다를 경우 구별 할 수 없게됩니다.
-# 값을 늘리면 더 긴 명령문을 구별 할 수 있지만 특히 동시 세션이 많은 워크로드 (서버가 세션 당 max_digest_length 바이트를 할당 함)의 경우 메모리 사용이 증가합니다.
+# 경고
+# max_digest_length를 0으로 설정하면 다이제스트 생성이 비활성화되고, MySQL 엔터프라이즈 방화벽과 같이 다이제스트가 필요한 서버 기능도 비활성화됩니다.
+# max_digest_length 값을 줄이면 메모리 사용량이 줄어들지만 끝에만 다를 경우 더 많은 문의 다이제스트 값을 구별할 수 없게 됩니다.
+# 값을 늘리면 더 긴 명령문을 구별할 수 있지만 특히 많은 수의 동시 세션이 포함된 작업 부하의 경우 메모리 사용량이 늘어납니다(서버는 세션당 max_digest_length 바이트를 할당함).
 # 
-# 파서는이 시스템 변수를 계산하는 정규화 된 명령문 요약의 최대 길이에 대한 한계로 사용합니다. 명령문 스키마를 추적하는 경우 성능 스키마는
-# performance_schema_max_digest_length를 사용하여 요약 값의 사본을 작성합니다.
-# 저장하는 다이제스트의 최대 길이에 대한 제한으로 시스템 변수. 따라서 performance_schema_max_digest_length가 max_digest_length보다 작으면
-# Performance Schema에 저장된 다이제스트 값이 원래 다이제스트 값에 비해 잘립니다.
+# 구문 분석기는 이 시스템 변수를 계산하는 정규화된 명령문 요약의 최대 길이에 대한 제한으로 사용합니다.
+# 성능 스키마는 명령문 요약을 추적하는 경우 performance_schema_max_digest_length를 사용하여 요약값의 복사본을 만듭니다.
+# 시스템 변수를 저장하는 다이제스트의 최대 길이에 대한 제한으로 사용합니다.
+# 따라서 performance_schema_max_digest_length가 max_digest_length보다 작으면 성능 스키마에 저장된 다이제스트 값이 원래 다이제스트 값에 비해 잘립니다.
 # 
-# 명령문 다이제스트에 대한 자세한 내용은 25.10 절“성능 스키마 구문 요약”을 참조하십시오.
+# 명령문 요약에 대한 자세한 내용은 25.10절. “성능 스키마 명령문 요약”에서 참조하십시오.
 #
 # * Apply Option
 # max_digest_length=1024
@@ -1563,6 +1565,51 @@
 # 
 # --------------------------------------------
 # 
+# 
+# @ max_insert_delayed_threads
+# 
+# Deprecated : Yes
+# System Variable : max_insert_delayed_threads
+# Scope ; Global, Session
+# Dynamic : Yes
+# Type : Integer
+#
+# 이 변수는 max_delayed_threads의 동의어입니다.
+# 
+# 이 시스템 변수는 더 이상 사용되지 않습니다 (DELAYED 삽입이 지원되지 않기 때문). 향후 릴리스에서 제거 될 예정입니다.
+#
+# * Apply Option
+# max_insert_delayed_threads=<>
+# 
+# --------------------------------------------
+# 
+# @ max_join_size
+# 
+# Command-Line Format : --max-join-size=#
+# System Variable : max_join_size
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 18446744073709551615
+# Minimum Value : 1
+# Maximum Value : 18446744073709551615
+# 
+# max_join_size 행 (단일 테이블 명령문의 경우) 또는 행 조합 (다중 테이블 명령문의 경우) 이상을 검사해야하거나
+# max_join_size 디스크 탐색보다 더 많이 수행 할 가능성이있는 명령문은 허용하지 마십시오.
+# 이 값을 설정하면 키가 제대로 사용되지 않고 시간이 오래 걸리는 명령문을 포착 할 수 있습니다.
+# 사용자가 WHERE 절이 없거나 시간이 오래 걸리거나 수백만 개의 행을 반환하는 조인을 수행하는 경향이있는 경우 설정하십시오.
+# 자세한 내용은 안전 업데이트 모드 (--safe-updates) 사용을 참조하십시오.
+# 
+# 이 변수를 DEFAULT 이외의 값으로 설정하면 sql_big_selects 값이 0으로 재설정됩니다.
+# sql_big_selects 값을 다시 설정하면 max_join_size 변수가 무시됩니다.
+# 
+# 쿼리 결과가 쿼리 캐시에있는 경우 결과가 이전에 계산되어 서버가 클라이언트에 전송하는 데 부담을주지 않으므로 결과 크기 확인이 수행되지 않습니다.
+#
+# * Apply Option
+# max_join_size=18446744073709551615
+# 
+# --------------------------------------------
+# 
 # @ max_prepared_stmt_count :
 # 
 # Property : Value
@@ -1580,6 +1627,33 @@
 #
 # * Apply Option
 # max_prepared_stmt_count=16382
+# 
+# --------------------------------------------
+# 
+# @ max_seeks_for_key
+# 
+# Command-Line Format : --max-seeks-for-key=#
+# System Variable : max_seeks_for_key
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Integer
+# Default Value (Windows) : 4294967295
+# Default Value (Other, 64-bit platforms) : 18446744073709551615
+# Default Value (Other, 32-bit platforms) : 4294967295
+# Minimum Value : 1
+# Maximum Value (Windows) : 4294967295
+# Maximum Value (Other, 64-bit platforms) : 18446744073709551615
+# Maximum Value (Other, 32-bit platforms) : 4294967295
+# 
+# Limit the assumed maximum number of seeks when looking up rows based on a key. The MySQL optimizer assumes that no more than this number of key seeks are required when searching for matching rows in a table by scanning an index, regardless of the actual cardinality of the index (see Section 13.7.5.22, “SHOW INDEX Statement”). By setting this to a low value (say, 100), you can force MySQL to prefer indexes instead of table scans.
+# 
+# 키를 기반으로 행을 찾을 때 가정되는 최대 탐색 수를 제한하십시오.
+# MySQL 옵티마이 저는 인덱스의 실제 카디널리티에 관계없이 인덱스를 스캔하여 테이블에서 일치하는 행을 검색할 때
+# 이 키 검색 횟수 이상이 필요하지 않다고 가정합니다 (섹션 13.7.5.22,“SHOW INDEX 문”참조).
+# 이것을 낮은 값 (예 : 100)으로 설정하면 MySQL이 테이블 스캔 대신 인덱스를 선호하도록 강제 할 수 있습니다.
+#
+# * Apply Option
+# max_seeks_for_key=4294967295
 # 
 # --------------------------------------------
 # 
@@ -1602,6 +1676,36 @@
 #
 # * Apply Option
 # max_sort_length=1024
+# 
+# --------------------------------------------
+# 
+# @ max_sp_recursion_depth
+# 
+# Command-Line Format : --max-sp-recursion-depth[=#]
+# System Variable : max_sp_recursion_depth
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 0
+# Maximum Value : 255
+# 
+# 지정된 저장 프로 시저가 재귀적으로 호출될 수 있는 횟수입니다. 이 옵션의 기본값은 0이며 저장 프로 시저에서 재귀를 완전히 비활성화합니다.
+# 최대 값은 255입니다.
+# 
+# 저장 프로 시저 재귀는 스레드 스택 공간에 대한 요구를 증가시킵니다.
+# max_sp_recursion_depth 값을 늘리면 서버 시작시 thread_stack 값을 늘려 스레드 스택 크기를 늘려야 할 수 있습니다.
+#
+# * Apply Option
+# max_sp_recursion_depth=0
+# 
+# --------------------------------------------
+# 
+# @ max_tmp_tables
+# 
+# 이 변수는 사용되지 않습니다. 더 이상 사용되지 않으며 MySQL 8.0에서 제거되었습니다.
+#
+# * Apply Option
+# max_tmp_tables=<>
 # 
 # --------------------------------------------
 # 
