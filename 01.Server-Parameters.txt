@@ -1733,6 +1733,100 @@
 # 
 # --------------------------------------------
 # 
+# @ max_write_lock_count
+# 
+# Command-Line Format : --max-write-lock-count=#
+# System Variable : max_write_lock_count
+# Scope : Global
+# Dynamic : Yes
+# Type  ;Integer
+# Default Value (Windows) : 4294967295
+# Default Value (Other, 64-bit platforms) : 18446744073709551615
+# Default Value (Other, 32-bit platforms) : 4294967295
+# Minimum Value : 1
+# Maximum Value (Windows) : 4294967295
+# Maximum Value (Other, 64-bit platforms) : 18446744073709551615
+# Maximum Value (Other, 32-bit platforms) : 4294967295
+# 
+# 이 많은 쓰기 잠금 후에는 보류중인 일부 읽기 잠금 요청이 그 사이에 처리되도록 허용하십시오. 쓰기 잠금 요청은 읽기 잠금 요청보다 우선 순위가 높습니다.
+# 그러나 max_write_lock_count가 낮은 값 (예 : 10)으로 설정된 경우 읽기 잠금 요청이 이미 10 개의 쓰기 잠금 요청을 위해
+# 전달된 경우 보류중인 쓰기 잠금 요청보다 읽기 잠금 요청이 선호 될 수 있습니다.
+# 기본적으로 max_write_lock_count의 값이 매우 크기 때문에 일반적으로이 동작이 발생하지 않습니다.
+#
+# * Apply Option
+# max_write_lock_count=18446744073709551615
+# 
+# --------------------------------------------
+# 
+# @ metadata_locks_cache_size
+# 
+# Command-Line Format : --metadata-locks-cache-size=#
+# Deprecated : Yes
+# System Variable : metadata_locks_cache_size
+# Scope : Global
+# Dynamic : No
+# Type : Integer
+# Default Value : 1024
+# Minimum Value : 1
+# Maximum Value : 1048576
+# 
+# The size of the metadata locks cache. The server uses this cache to avoid creation and destruction of synchronization objects. This is particularly helpful on systems where such operations are expensive, such as Windows XP.
+# 
+# In MySQL 5.7.4, metadata locking implementation changes make this variable unnecessary, and so it is deprecated; expect it to be removed in a future release of MySQL.
+# 
+# 메타 데이터 잠금 캐시의 크기입니다. 서버는이 캐시를 사용하여 동기화 개체의 생성 및 삭제를 방지합니다.
+# 이는 Windows XP와 같이 이러한 작업에 비용이 많이 드는 시스템에서 특히 유용합니다.
+# 
+# MySQL 5.7.4에서 메타 데이터 잠금 구현 변경으로 인해이 변수가 불필요하므로 더 이상 사용되지 않습니다.
+# MySQL의 향후 릴리스에서 제거 될 것으로 예상됩니다.
+# 
+# * Apply Option
+# metadata_locks_cache_size=1024
+#
+# --------------------------------------------
+# 
+# @ metadata_locks_hash_instances
+# 
+# Command-Line Format : --metadata-locks-hash-instances=#
+# Deprecated : Yes
+# System Variable : metadata_locks_hash_instances
+# Scope : Global
+# Dynamic : No
+# Type : Integer
+# Default Value : 8
+# Minimum Value : 1
+# Maximum Value ; 1024
+# 
+# 메타 데이터 잠금 집합을 별도의 해시로 분할하여 서로 다른 개체에 액세스하는 연결이 서로 다른 잠금 해시를 사용하고 경합을 줄일 수 있습니다.
+# metadata_locks_hash_instances 시스템 변수는 해시 수를 지정합니다 (기본값 8).
+# 
+# MySQL 5.7.4에서 메타 데이터 잠금 구현 변경으로 인해이 변수가 불필요하므로 더 이상 사용되지 않습니다.
+# MySQL의 향후 릴리스에서 제거 될 것으로 예상됩니다.
+# 
+# * Apply Option
+# metadata_locks_hash_instances=8
+# 
+# --------------------------------------------
+# 
+# @ multi_range_count
+# 
+# Command-Line Format : --multi-range-count=#
+# Deprecated : Yes
+# System Variable : multi_range_count
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 256
+# Minimum Value : 1
+# Maximum Value : 4294967295
+# 
+# 이 변수는 효과가 없습니다. 더 이상 사용되지 않으며 MySQL 8.0에서 제거되었습니다.
+#
+# * Apply Option
+# multi_range_count=256
+# 
+# --------------------------------------------
+# 
 # @ net_buffer_length :
 # 
 # Property : Value
@@ -3019,7 +3113,28 @@ $ 기본 데이터베이스가 없는 경우 변수는 collation_server와 동�
 #
 # * Apply Option
 # log_queries_not_using_indexes=OFF 
+#
+# --------------------------------------------
+#
+# @ min_examined_row_limit
 # 
+# Command-Line Format : --min-examined-row-limit=#
+# System Variable : min_examined_row_limit
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 0
+# Minimum Value : 0
+# Maximum Value (64-bit platforms) : 18446744073709551615
+# Maximum Value (32-bit platforms) ; 4294967295
+# 
+# 이 행 수보다 적은 수를 검사하는 쿼리는 느린 쿼리 로그에 기록되지 않습니다.
+#
+# * Apply Option
+# min_examined_row_limit=0
+#
+# --------------------------------------------
+#
 # ----------------------------------------------------
 # -------------Optimizer 관련 변수들.------------------
 # ----------------------------------------------------
