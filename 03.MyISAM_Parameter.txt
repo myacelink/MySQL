@@ -309,3 +309,122 @@
 #
 # * Apply Option
 # key_cache_division_limit=100
+#
+# --------------------------------------------
+# 
+# @ myisam_data_pointer_size
+# 
+# Command-Line Format	--myisam-data-pointer-size=#
+# System Variable	myisam_data_pointer_size
+# Scope	Global
+# Dynamic	Yes
+# Type	Integer
+# Default Value	6
+# Minimum Value	2
+# Maximum Value	7
+# 
+# MAX_ROWS 옵션이 지정되지 않은 경우 MyISAM 테이블에 대해 CREATE TABLE에서 사용할 기본 포인터 크기 (바이트)입니다.
+# 이 변수는 2보다 작거나 7보다 클 수 없습니다. 기본값은 6입니다. 섹션 B.3.2.10,“테이블이 가득 참”을 참조하십시오.
+# 
+# * Apply Option
+# myisam_data_pointer_size=6
+#
+# --------------------------------------------
+# 
+# @ myisam_max_sort_file_size
+# 
+# Command-Line Format : --myisam-max-sort-file-size=#
+# System Variable : myisam_max_sort_file_size
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value (Windows) : 2146435072
+# Default Value (Other, 64-bit platforms) : 9223372036853727232
+# Default Value (Other, 32-bit platforms) : 2147483648
+# Maximum Value (Windows) ; 2146435072
+# Maximum Value (Other, 64-bit platforms) : 9223372036853727232
+# Maximum Value (Other, 32-bit platforms) : 2147483648
+# 
+# MyISAM 인덱스를 다시 생성하는 동안 (REPAIR TABLE, ALTER TABLE 또는 LOAD DATA 동안) MySQL이 사용할 수있는 임시 파일의 최대 크기입니다.
+# 파일 크기가이 값보다 클 경우 인덱스는 대신 키 캐시를 사용하여 생성되며 속도가 느립니다. 값은 바이트 단위로 제공됩니다.
+# 
+# MyISAM 인덱스 파일이이 크기를 초과하고 디스크 공간을 사용할 수있는 경우 값을 늘리면 성능에 도움이 될 수 있습니다.
+# 원래 색인 파일이있는 디렉토리를 포함하는 파일 시스템에서 공간을 사용할 수 있어야합니다.
+#
+# * Apply Option
+# myisam_max_sort_file_size=2146435072
+#
+# --------------------------------------------
+# 
+# myisam_mmap_size
+# 
+# Command-Line Format	--myisam-mmap-size=#
+# System Variable	myisam_mmap_size
+# Scope	Global
+# Dynamic	No
+# Type	Integer
+# Default Value (64-bit platforms)	18446744073709551615
+# Default Value (32-bit platforms)	4294967295
+# Minimum Value	7
+# Maximum Value (64-bit platforms)	18446744073709551615
+# Maximum Value (32-bit platforms)	4294967295
+# 
+# The maximum amount of memory to use for memory mapping compressed MyISAM files. If many compressed MyISAM tables are used, the value can be decreased to reduce the likelihood of memory-swapping problems.
+# 
+# 압축 된 MyISAM 파일을 메모리 매핑하는 데 사용할 최대 메모리 양입니다. 압축 된 MyISAM 테이블이 많이 사용되는 경우 값을 줄여 메모리 스왑 문제의 가능성을 줄일 수 있습니다.
+# 
+# * Apply Option
+# myisam_mmap_size=18446744073709551615
+#
+# --------------------------------------------
+# 
+# @ myisam_recover_options
+# 
+# Command-Line Format : --myisam-recover-options[=list]
+# System Variable : myisam_recover_options
+# Scope : Global
+# Dynamic : No
+# Type : Enumeration
+# Default Value : OFF
+# Valid Values : OFF, DEFAULT, BACKUP, FORCE, QUICK
+# 
+# MyISAM 스토리지 엔진 복구 모드를 설정합니다. 변수 값은 OFF, DEFAULT, BACKUP, FORCE 또는 QUICK 값의 조합입니다.
+# 여러 값을 지정하는 경우 쉼표로 구분하십시오.
+# 서버 시작시 값없이 변수를 지정하는 것은 DEFAULT를 지정하는 것과 같고 명시 적 값 ""로 지정하면 복구가 비활성화됩니다(OFF 값과 동일).
+# 복구가 활성화되면 mysqld가 MyISAM 테이블을 열 때마다 테이블이 충돌 한 것으로 표시되었는지 또는 제대로 닫히지 않았는지 확인합니다.
+# (마지막 옵션은 외부 잠금을 비활성화 한 상태에서 실행하는 경우에만 작동합니다.)이 경우 mysqld는 테이블에 대해 검사를 실행합니다.
+# 테이블이 손상된 경우 mysqld는이를 복구하려고 시도합니다.
+# 
+# 다음 옵션은 복구 작동 방식에 영향을줍니다.
+# Option   |   Description
+# OFF      |   복구하지 않음
+# DEFAULT  |   백업, 강제 또는 빠른 확인없이 복구합니다.
+# BACKUP   |   복구 중에 데이터 파일이 변경된 경우 tbl_name.MYD 파일의 백업을 tbl_name-datetime.BAK로 저장합니다.
+# FORCE    |   file..MYD 파일에서 둘 이상의 행이 손실 되더라도 복구를 실행하십시오.
+# QUICK    |   삭제 블록이없는 경우 테이블의 행을 확인하지 마십시오.
+# 
+# 서버가 테이블을 자동으로 복구하기 전에 복구에 대한 메모를 오류 로그에 기록합니다.
+# 사용자 개입없이 대부분의 문제에서 복구 할 수 있도록하려면 BACKUP, FORCE 옵션을 사용해야합니다.
+# 이렇게하면 일부 행이 삭제 되더라도 테이블이 강제로 복구되지만 나중에 발생한 상황을 조사 할 수 있도록 이전 데이터 파일을 백업으로 유지합니다.
+# 
+# 15.2.1 절.“MyISAM 시작 옵션”을 참조하십시오.
+# 
+# --------------------------------------------
+#
+# myisam_repair_threads
+# 
+# Command-Line Format : --myisam-repair-threads=#
+# System Variable : myisam_repair_threads
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 1
+# Minimum Value : 1
+# Maximum Value (64-bit platforms) : 18446744073709551615
+# Maximum Value (32-bit platforms) : 4294967295
+# 
+# 이 값이 1보다 크면 MyISAM 테이블 인덱스는 정렬 방식으로 복구하는 동안 병렬로 생성됩니다 (자체 스레드의 각 인덱스). 기본값은 1입니다.
+# 
+# 노트
+# 다중 스레드 복구는 여전히 베타 품질 코드입니다.
+
