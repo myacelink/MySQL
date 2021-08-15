@@ -1905,6 +1905,64 @@
 # 
 # --------------------------------------------
 # 
+# @ new
+# 
+# Command-Line Format : --new[={OFF|ON}]
+# System Variable : new
+# Scope : Global, Session
+# Dynamic : Yes
+# Disabled by : skip-new
+# Type : Boolean
+# Default Value : OFF
+# 
+# 이 변수는 MySQL 4.0에서 일부 4.1 동작을 설정하는 데 사용되었으며 이전 버전과의 호환성을 위해 유지됩니다. 그 값은 항상 OFF입니다.
+# 
+# NDB 클러스터에서이 변수를 ON으로 설정하면 NDB 테이블에서 KEY 또는 LINEAR KEY 이외의 분할 유형을 사용할 수 있습니다.
+# 이 기능은 시험용이며 프로덕션에서는 지원되지 않습니다. 추가 정보는 사용자 정의 파티셔닝 및 NDB 스토리지 엔진 (NDB 클러스터)을 참조하십시오.
+#
+# * Apply Option
+# new=OFF
+#
+# --------------------------------------------
+# 
+# @ old
+# 
+# Command-Line Format : --old[={OFF|ON}]
+# System Variable : old
+# Scope : Global
+# Dynamic : No
+# Type : Boolean
+# Default Value : OFF
+# 
+# old는 호환성 변수입니다. 기본적으로 비활성화되어 있지만 시작시 활성화하여 서버를 이전 버전의 동작으로 되돌릴 수 있습니다.
+# 
+# old가 활성화되면 인덱스 힌트의 기본 범위가 MySQL 5.1.17 이전에 사용 된 범위로 변경됩니다.
+# 즉, FOR 절이없는 인덱스 힌트는 인덱스가 행 검색에 사용되는 방식에만 적용되고 ORDER BY 또는 GROUP BY 절의 확인에는 적용되지 않습니다.
+# (섹션 8.9.4,“인덱스 힌트”를 참조하십시오.) 복제 설정에서 활성화 할 때주의하십시오.
+# 문 기반 바이너리 로깅을 사용하면 소스와 복제본에 대해 서로 다른 모드를 사용하면 복제 오류가 발생할 수 있습니다.
+#
+# * Apply Option
+# old=OFF
+#
+# --------------------------------------------
+# @ old_alter_table
+# 
+# Command-Line Format : --old-alter-table[={OFF|ON}]
+# System Variable : old_alter_table
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : OFF
+# 
+# 이 변수가 활성화되면 서버는 ALTER TABLE 작업을 처리하는 최적화 된 방법을 사용하지 않습니다.
+# 임시 테이블을 사용하여 데이터를 복사 한 다음 MySQL 5.0 및 이전 버전에서 사용 된 것처럼 임시 테이블의 이름을 원본으로 되돌립니다.
+# ALTER TABLE의 작동에 대한 자세한 내용은 Section 13.1.8,“ALTER TABLE 문”을 참조하십시오.
+# 
+# * Apply Option
+# old_alter_table=OFF
+# 
+# --------------------------------------------
+# 
 # @ offline_mode :
 # 
 # Property : Value
