@@ -172,7 +172,25 @@
 #
 # * Apply Option
 # rpl_semi_sync_master_wait_point=AFTER_SYNC
+#
+# --------------------------------------------
 # 
+# @ master_verify_checksum
+# 
+# Command-Line Format : --master-verify-checksum[={OFF|ON}]
+# System Variable : master_verify_checksum
+# Scope : Global
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : OFF
+# 
+# 이 변수를 활성화하면 소스가 체크섬을 검사하여 이진 로그에서 읽은 이벤트를 확인하고 불일치시 오류와 함께 중지됩니다.
+# master_verify_checksum은 기본적으로 비활성화되어 있습니다. 이 경우 소스는 이진 로그의 이벤트 길이를 사용하여 이벤트를 확인하므로 이진 로그에서 완전한 이벤트만 읽습니다.
+#
+# * Apply Option
+# master_verify_checksum=OFF
+# 
+# --------------------------------------------
 # 
 # ---------------------------------------------------------------------------
 # -----------Replication Slave Options and Variables-------------------------

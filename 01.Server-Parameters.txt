@@ -1963,6 +1963,45 @@
 # 
 # --------------------------------------------
 # 
+# @ old_passwords
+# 
+# Command-Line Format : --old-passwords=value
+# Deprecated : Yes
+# System Variable : old_passwords
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Enumeration
+# Default Value : 0
+# Valid Values : 0, 2
+# 
+# 노트---
+# 이 시스템 변수는 MySQL 5.7에서 더 이상 사용되지 않습니다. MySQL의 향후 릴리스에서 제거 될 것으로 예상됩니다.
+--------
+#
+# 이 변수는 PASSWORD () 함수에서 사용하는 암호 해싱 방법을 제어합니다.
+# 또한 IDENTIFIED BY 절을 사용하여 암호를 지정하는 CREATE USER 및 GRANT 문에 의해 수행되는 암호 해싱에 영향을줍니다.
+# 
+# 다음 표는 각 암호 해싱 방법에 대해 old_passwords의 허용 값과 해싱 방법을 사용하는 인증 플러그인을 보여줍니다.
+# 
+# https://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html
+# Password Hashing Method    |    old_passwords Value   |   Associated Authentication Plugin
+# MySQL 4.1 native hashing	 |              0           |       mysql_native_password
+# SHA-256 hashing            |              2           |           sha256_password
+# 
+# old_passwords = 2를 설정한 경우 6.4.1.5 절.“SHA-256 플러그 가능 인증”에서 sha256_password 플러그인 사용 지침을 따르십시오.
+# 
+# 서버는 시작시 전역 old_passwords 값을 default_authentication_plugin 시스템 변수에 표시된 인증 플러그인에 필요한 암호 해싱 방법과 일치하도록 설정합니다.
+# 
+# 클라이언트가 서버에 성공적으로 연결되면 서버는 계정 인증 방법에 대해 세션 old_passwords 값을 적절하게 설정합니다.
+# 예를 들어 계정이 sha256_password 인증 플러그인을 사용하는 경우 서버는 old_passwords = 2를 설정합니다.
+# 
+# 인증 플러그인 및 해싱 형식에 대한 추가 정보는 섹션 6.2.13,“Pluggable 인증”및 섹션 6.1.2.4,“MySQL의 암호 해싱”을 참조하십시오.
+# 
+# * Apply Option
+# old_passwords=0
+# 
+# --------------------------------------------
+# 
 # @ offline_mode :
 # 
 # Property : Value
@@ -2041,6 +2080,24 @@
 # plugin_dir=BASEDIR/lib/plugin
 # 
 # --------------------------------------------
+#
+# @ port
+# 
+# Command-Line Format : --port=port_num
+# System Variable ; port
+# Scope : Global
+# Dynamic : No
+# Type	Integer
+# Default Value : 3306
+# Minimum Value : 0
+# Maximum Value : 65535
+# 
+# 서버가 TCP / IP 연결을 인식하는 포트 번호입니다. 이 변수는 --port 옵션으로 설정할 수 있습니다.
+# 
+# * Apply Option
+# port=3306
+# 
+# --------------------------------------------
 # 
 # @ preload_buffer_size :
 # 
@@ -2058,6 +2115,45 @@
 #
 # * Apply Option
 # preload_buffer_size=32768
+# 
+# --------------------------------------------
+# 
+# @ profiling
+# 
+# 0 또는 OFF (기본값)로 설정하면 문 프로파일 링이 비활성화됩니다.
+# 1 또는 ON으로 설정하면 명령문 프로파일 링이 활성화되고 SHOW PROFILE 및 SHOW PROFILES 명령문은 프로파일 링 정보에 대한 액세스를 제공합니다.
+# 섹션 13.7.5.31,“SHOW PROFILES 성명서”를 참조하십시오.
+# 
+# 이 변수는 더 이상 사용되지 않습니다. MySQL의 향후 릴리스에서 제거 될 것으로 예상됩니다.
+# 
+# * Apply Option
+# profiling=<>
+# 
+# --------------------------------------------
+# 
+# @ profiling_history_size
+# 
+# 프로파일링이 활성화 된 경우 프로파일링 정보를 유지할 명령문 수입니다. 기본값은 15입니다. 최대 값은 100입니다.
+# 값을 0으로 설정하면 프로파일 링이 효과적으로 비활성화됩니다. 섹션 13.7.5.31,“SHOW PROFILES 성명서”를 참조하십시오.
+# 
+# 이 변수는 더 이상 사용되지 않습니다. MySQL의 향후 릴리스에서 제거 될 것으로 예상됩니다.
+# 
+# * Apply Option
+# profiling_history_size=<>
+# 
+# --------------------------------------------
+# 
+# @ protocol_version
+# 
+# System Variable	protocol_version
+# Scope	Global
+# Dynamic	No
+# Type	Integer
+# 
+# MySQL 서버에서 사용하는 클라이언트 / 서버 프로토콜의 버전입니다.
+# 
+# * Apply Option
+# protocol_version=<>
 # 
 # --------------------------------------------
 # 
