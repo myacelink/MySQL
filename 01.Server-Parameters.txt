@@ -2249,6 +2249,36 @@
 # 
 # --------------------------------------------
 # 
+# @ secure_auth
+# 
+# Command-Line Format : --secure-auth[={OFF|ON}]
+# Deprecated : Yes
+# System Variable : secure_auth
+# Scope : Global
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : ON
+# Valid Values : ON
+# 
+# 이 변수가 활성화되면 서버는 이전 (4.1 이전) 형식으로 저장된 암호가있는 계정을 사용하려는 클라이언트의 연결을 차단합니다.
+# 이 변수를 활성화하여 이전 형식을 사용하는 모든 암호 사용 (따라서 네트워크를 통한 안전하지 않은 통신)을 방지합니다.
+# 
+# 이 변수는 더 이상 사용되지 않습니다. MySQL의 향후 릴리스에서 제거 될 것으로 예상됩니다.
+# 항상 활성화되어 있으며 비활성화하려고하면 오류가 발생합니다.
+# 
+# 이 변수가 활성화되고 권한 테이블이 4.1 이전 형식 인 경우 서버 시작이 오류와 함께 실패합니다.
+# 6.4.1.3 절.“4.1 이전 암호 해싱 및 mysql_old_password 플러그인에서 마이그레이션”을 참조하십시오.
+# 
+# 노트
+# 4.1 이전 해싱 방법을 사용하는 암호는 기본 암호 해싱 방법을 사용하는 암호보다 덜 안전하므로 피해야합니다.
+# 4.1 이전 비밀번호는 더 이상 사용되지 않으며 MySQL 5.7.5에서 지원이 제거되었습니다.
+# 계정 업그레이드 지침은 6.4.1.3 절.“4.1 이전 암호 해싱 및 mysql_old_password 플러그인에서 마이그레이션”을 참조하십시오.
+# 
+# * Apply Option
+# secure_auth=ON
+# 
+# --------------------------------------------
+# 
 # @ secure_file_priv :
 # 
 # Property : Value
@@ -2271,6 +2301,97 @@
 #
 # * Apply Option
 # secure_file_priv=platform specific
+# 
+# --------------------------------------------
+# 
+# @ server_id_bits
+# 
+# Command-Line Format : --server-id-bits=#
+# System Variable : server_id_bits
+# Scope : Global
+# Dynamic : No
+# Type ; Integer
+# Default Value : 32
+# Minimum Value ; 7
+# Maximum Value : 32
+# 
+# 이 변수는 실제로 서버를 식별하는 32 비트 server_id 내의 최하위 비트 수를 나타냅니다.
+# 서버가 실제로 32 비트 미만으로 식별됨을 나타내면 나머지 비트 중 일부를 OperationOptions 구조의 AnyValue 내에서
+# NDB API의 이벤트 API를 사용하여 애플리케이션에서 생성 한 사용자 데이터를 저장하는 등 다른 용도로 사용할 수 있습니다 ( NDB 클러스터는 AnyValue를 사용하여 서버 ID를 저장합니다).
+# 
+# 복제 루프 감지와 같은 목적으로 server_id에서 유효 서버 ID를 추출 할 때 서버는 나머지 비트를 무시합니다.
+# server_id_bits 변수는 서버 ID를 기반으로 이벤트를 무시할지 여부를 결정할 때 I/O 및 SQL 스레드에서 server_id의 관련없는 비트를 마스킹하는 데 사용됩니다.
+# 
+# 이 데이터는 자체 server_id_bits 변수가 32 (기본값)로 설정된 상태로 실행되는 경우 mysqlbinlog에 의해 바이너리 로그에서 읽을 수 있습니다.
+# 
+# server_id의 값이 2보다 크거나 같은 경우 server_id_bits의 제곱; 그렇지 않으면 mysqld가 시작을 거부합니다.
+# 
+# 이 시스템 변수는 NDB 클러스터에서만 지원됩니다. 표준 MySQL 5.7 서버에서는 지원되지 않습니다.
+#
+# * Apply Option
+# server_id_bits=32
+# 
+# --------------------------------------------
+# 
+# @ sha256_password_private_key_path
+# 
+# Command-Line Format : --sha256-password-private-key-path=file_name
+# System Variable : sha256_password_private_key_path
+# Scope : Global
+# Dynamic : No
+# Type : File name
+# Default Value : private_key.pem
+# 
+# 이 변수는 MySQL이 OpenSSL을 사용하여 컴파일 된 경우 사용할 수 있습니다 (섹션 6.3.4,“SSL 라이브러리 종속 기능”참조).
+# 해당 값은 sha256_password 인증 플러그인에 대한 RSA 개인 키 파일의 경로 이름입니다.
+# 파일 이름이 상대 경로로 지정되면 서버 데이터 디렉토리를 기준으로 해석됩니다. 파일은 PEM 형식이어야합니다.
+# 
+# 중대한
+# 이 파일은 개인 키를 저장하기 때문에 MySQL 서버 만 읽을 수 있도록 액세스 모드를 제한해야합니다.
+# 
+# sha256_password에 대한 자세한 내용은 6.4.1.5 절.“SHA-256 플러그 가능 인증”을 참조하십시오.
+# 
+# * Apply Option
+# sha256_password_private_key_path=private_key.pem
+# 
+# --------------------------------------------
+# 
+# @ sha256_password_proxy_users
+# 
+# Command-Line Format : --sha256-password-proxy-users[={OFF|ON}]
+# System Variable : sha256_password_proxy_users
+# Scope : Global
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : OFF
+# 
+# 이 변수는 sha256_password 내장 인증 플러그인이 프록시 사용자를 지원하는지 여부를 제어합니다.
+# check_proxy_users 시스템 변수가 활성화되어 있지 않으면 효과가 없습니다. 사용자 프록시에 대한 정보는 6.2.14 절.“프록시 사용자”를 참조하십시오.
+# 
+# * Apply Option
+# sha256_password_proxy_users=OFF
+# 
+# --------------------------------------------
+# 
+# @ sha256_password_public_key_path
+# 
+# Command-Line Format : --sha256-password-public-key-path=file_name
+# System Variable : sha256_password_public_key_path
+# Scope ; Global
+# Dynamic : No
+# Type : File name
+# Default Value : public_key.pem
+# 
+# 이 변수는 MySQL이 OpenSSL을 사용하여 컴파일 된 경우 사용할 수 있습니다 (섹션 6.3.4,“SSL 라이브러리 종속 기능”참조).
+# 해당 값은 sha256_password 인증 플러그인에 대한 RSA 공개 키 파일의 경로 이름입니다.
+# 파일 이름이 상대 경로로 지정되면 서버 데이터 디렉토리를 기준으로 해석됩니다. 파일은 PEM 형식이어야합니다.
+# 이 파일은 공개 키를 저장하기 때문에 사본을 클라이언트 사용자에게 자유롭게 배포 할 수 있습니다.
+# (RSA 암호 암호화를 사용하여 서버에 연결할 때 공개 키를 명시 적으로 지정하는 클라이언트는 서버에서 사용하는 것과 동일한 공개 키를 사용해야합니다.)
+# 
+# 클라이언트가 RSA 공개 키를 지정하는 방법에 대한 정보를 포함하여 sha256_password에 대한 정보는 Section 6.4.1.5,“SHA-256 Pluggable Authentication”을 참조하십시오.
+# 
+# * Apply Option
+# sha256_password_public_key_path=public_key.pem
 # 
 # --------------------------------------------
 # 
@@ -3306,6 +3427,9 @@ $ 기본 데이터베이스가 없는 경우 변수는 collation_server와 동�
 # 
 # 명령문 구문 분석 및 실행중에 생성된 개체에 할당되는 메모리 블록의 할당 크기 (바이트)입니다.
 # 메모리 조각화에 문제가있는 경우이 매개 변수를 늘리는 것이 도움이 될 수 있습니다.
+#
+# * Apply Option
+# query_alloc_block_size=8192
 # 
 # --------------------------------------------
 # 
@@ -3326,6 +3450,9 @@ $ 기본 데이터베이스가 없는 경우 변수는 collation_server와 동�
 # 
 # 노트
 # 쿼리 캐시는 MySQL 5.7.20에서 더 이상 사용되지 않으며 MySQL 8.0에서 제거되었습니다. 지원 중단에는 query_cache_limit가 포함됩니다.
+#
+# * Apply Option
+# query_cache_limit=1048576
 # 
 # --------------------------------------------
 #
@@ -3346,6 +3473,9 @@ $ 기본 데이터베이스가 없는 경우 변수는 collation_server와 동�
 # 
 # 참고사항
 # 쿼리 캐시는 MySQL 5.7.20에서 더 이상 사용되지 않으며 MySQL 8.0에서 제거되었습니다. 지원 중단에는 query_cache_min_res_unit이 포함됩니다.
+#
+# * Apply Option
+# query_cache_min_res_unit=4096
 #
 # --------------------------------------------
 # 
@@ -3375,6 +3505,9 @@ $ 기본 데이터베이스가 없는 경우 변수는 collation_server와 동�
 # 
 # 노트
 # 쿼리 캐시는 MySQL 5.7.20에서 더 이상 사용되지 않으며 MySQL 8.0에서 제거되었습니다. 지원 중단에는 query_cache_size가 포함됩니다.
+#
+# * Apply Option
+# query_cache_size=1048576
 # 
 # --------------------------------------------
 #
@@ -3404,9 +3537,55 @@ $ 기본 데이터베이스가 없는 경우 변수는 collation_server와 동�
 # 
 # 참고사항
 # 쿼리 캐시는 MySQL 5.7.20에서 더 이상 사용되지 않으며 MySQL 8.0에서 제거되었습니다. 지원 중단에는 query_cache_type이 포함됩니다.
+#
+# * Apply Option
+# query_cache_type=0
 # 
+# --------------------------------------------
 # 
+# @ query_cache_wlock_invalidate
 # 
+# Command-Line Format : --query-cache-wlock-invalidate[={OFF|ON}]
+# Deprecated : 5.7.20
+# System Variable : query_cache_wlock_invalidate
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : OFF
+# 
+# 일반적으로 한 클라이언트가 MyISAM 테이블에 대한 WRITE 잠금을 획득 할 때 쿼리 결과가 쿼리 캐시에있는 경우
+# 다른 클라이언트는 테이블에서 읽은 문을 발행하지 못하도록 차단되지 않습니다.
+# 이 변수를 1로 설정하면 테이블에 대한 WRITE 잠금을 획득하여 테이블을 참조하는 쿼리 캐시의 모든 쿼리가 무효화됩니다.
+# 이렇게하면 잠금이 적용되는 동안 테이블에 액세스하려는 다른 클라이언트가 대기하게됩니다.
+# 
+# 노트
+# 쿼리 캐시는 MySQL 5.7.20에서 더 이상 사용되지 않으며 MySQL 8.0에서 제거되었습니다.
+# 지원 중단에는 query_cache_wlock_invalidate가 포함됩니다.
+#
+# * Apply Option
+# query_cache_wlock_invalidate=OFF
+# 
+# --------------------------------------------
+# 
+# @ query_prealloc_size
+# 
+# Command-Line Format : --query-prealloc-size=#
+# System Variable : query_prealloc_size
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 8192
+# Minimum Value : 8192
+# Maximum Value (64-bit platforms) : 18446744073709547520
+# Maximum Value (32-bit platforms) : 4294967295
+# Block Size : 1024
+# 
+# 명령문 구문 분석 및 실행에 사용되는 영구 버퍼의 크기 (바이트)입니다. 이 버퍼는 문 사이에서 해제되지 않습니다.
+# 복잡한 쿼리를 실행하는 경우 더 큰 query_prealloc_size 값은 쿼리 실행 작업 중에 서버가 메모리 할당을 수행해야하는 필요성을 줄일 수 있으므로 성능 향상에 도움이 될 수 있습니다.
+# 
+# * Apply Option
+# query_prealloc_size=8192
+#
 # 
 # ----------------------------------------------------
 # -------------Optimizer 관련 변수들.------------------

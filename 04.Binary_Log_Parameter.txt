@@ -1139,6 +1139,24 @@
 # 
 # --------------------------------------------
 # 
+# @ relay_log_space_limit
+# 
+# Command-Line Format : --relay-log-space-limit=#
+# System Variable : relay_log_space_limit
+# Scope : Global
+# Dynamic : No
+# Type : Integer
+# Default Value : 0
+# Minimum Value : 0
+# Maximum Value ; 4294967295
+# 
+# 모든 릴레이 로그에 사용할 최대 공간입니다.
+# 
+# * Apply Option
+# relay_log_space_limit=0
+# 
+# --------------------------------------------
+# 
 # @ sync_relay_log
 # 
 # Property : Value
