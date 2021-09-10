@@ -776,6 +776,25 @@
 # 
 # --------------------------------------------
 # 
+# @ slave_allow_batching
+# 
+# Command-Line Format : --slave-allow-batching[={OFF|ON}]
+# System Variable : slave_allow_batching
+# Scope : Global
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : OFF
+# 
+# NDB 클러스터 복제본에서 일괄 업데이트를 사용할지 여부입니다.
+# 
+# 이 변수 설정은 NDB 스토리지 엔진과 함께 복제를 사용할 때만 영향을 미칩니다. MySQL Server 5.7에서는 존재하지만 아무것도하지 않습니다.
+# 자세한 내용은 섹션 21.6.6,“NDB 클러스터 복제 시작 (단일 복제 채널)”을 참조하십시오.
+#
+# * Apply Option
+# slave_allow_batching=OFF
+# 
+# --------------------------------------------
+# 
 # @ slave_checkpoint_group
 # 
 # Property : Value

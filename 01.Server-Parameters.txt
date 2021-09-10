@@ -2413,6 +2413,54 @@
 # 
 # --------------------------------------------
 # 
+# @ show_old_temporals
+# 
+# Command-Line Format : --show-old-temporals[={OFF|ON}]
+# Deprecated : Yes
+# System Variable : show_old_temporals
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : OFF
+# 
+# SHOW CREATE TABLE 출력에 5.6.4 이전 형식(분수 초 정밀도를 지원하지 않는 TIME, DATETIME 및 TIMESTAMP 열)에 있는것으로 확인된 임시 열에 플래그를
+# 지정하는 주석이 포함되는지 여부. 이 변수는 기본적으로 비활성화되어 있습니다. 활성화 된 경우 SHOW CREATE TABLE 출력은 다음과 같습니다.
+# 
+# CREATE TABLE `mytbl` (
+#   `ts` timestamp /* 5.5 binary format */ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+#   `dt` datetime /* 5.5 binary format */ DEFAULT NULL,
+#   `t` time /* 5.5 binary format */ DEFAULT NULL
+# ) DEFAULT CHARSET=latin1
+# 
+# INFORMATION_SCHEMA.COLUMNS 테이블의 COLUMN_TYPE 열에 대한 출력도 비슷하게 영향을받습니다.
+# 
+# 이 변수는 더 이상 사용되지 않습니다. MySQL의 향후 릴리스에서 제거 될 것으로 예상됩니다.
+#
+# * Apply Option
+# show_old_temporals=OFF
+# 
+# --------------------------------------------
+# 
+# @ skip_external_locking
+# 
+# Command-Line Format : --skip-external-locking[={OFF|ON}]
+# System Variable : skip_external_locking
+# Scope : Global
+# Dynamic : No
+# Type : Boolean
+# Default Value : ON
+# 
+# mysqld가 외부 잠금 (시스템 잠금)을 사용하면 OFF이고, 외부 잠금이 비활성화되어 있으면 ON입니다. 이는 MyISAM 테이블 액세스에만 영향을줍니다.
+# 
+# 이 변수는 --external-locking 또는 --skip-external-locking 옵션으로 설정됩니다. 외부 잠금은 기본적으로 비활성화되어 있습니다.
+# 
+# 외부 잠금은 MyISAM 테이블 액세스에만 영향을줍니다. 사용할 수있는 조건과 사용할 수없는 조건을 포함한 자세한 내용은 섹션 8.11.5,“외부 잠금”을 참조하십시오.
+#
+# * Apply Option
+# skip_external_locking=ON
+# 
+# --------------------------------------------
+# 
 # @ skip_name_resolve :
 # 
 # Property : Value
@@ -3281,6 +3329,22 @@ $ 기본 데이터베이스가 없는 경우 변수는 collation_server와 동�
 # ----------------------------------------------------
 # -------------Slow Query, Index 관련 변수들.----------
 # ----------------------------------------------------
+# 
+# @ slow_launch_time
+# 
+# Command-Line Format : --slow-launch-time=#
+# System Variable : slow_launch_time
+# Scope : Global
+# Dynamic : Yes
+# Type : Integer
+# Default Value : 2
+# 
+# 스레드를 만드는 데이 시간보다 오래 걸리는 경우 서버는 Slow_launch_threads 상태 변수를 증가시킵니다.
+#
+# * Apply Option
+# slow_launch_time=2
+# 
+# --------------------------------------------
 # @ slow_query_log
 # 
 # Property : Value
