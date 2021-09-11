@@ -2556,6 +2556,66 @@
 # 
 # --------------------------------------------
 # 
+# @ sql_auto_is_null
+# 
+# System Variable : sql_auto_is_null
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : OFF
+# 
+# 이 변수가 활성화 된 경우 자동 생성 된 AUTO_INCREMENT 값을 성공적으로 삽입하는 문 다음에 다음 형식의 문을 실행하여 해당 값을 찾을 수 있습니다.
+# 
+# SELECT * FROM tbl_name WHERE auto_col IS NULL
+# 
+# 문이 행을 반환하면 반환 된 값은 LAST_INSERT_ID() 함수를 호출 한 것과 같습니다.
+# 다중 행 삽입 후 반환 값을 포함한 자세한 내용은 Section 12.16,“정보 함수”를 참조하십시오.
+# AUTO_INCREMENT 값이 성공적으로 삽입되지 않은 경우 SELECT 문은 행을 반환하지 않습니다.
+# 
+# IS NULL 비교를 사용하여 AUTO_INCREMENT 값을 검색하는 동작은 Access와 같은 일부 ODBC 프로그램에서 사용됩니다.
+# 자동 증가 값 얻기를 참조하십시오. 이 동작은 sql_auto_is_null을 OFF로 설정하여 비활성화 할 수 있습니다.
+# 
+# sql_auto_is_null의 기본값은 OFF입니다.
+#
+# * Apply Option
+# sql_auto_is_null=OFF
+# 
+# --------------------------------------------
+# 
+# @ sql_big_selects
+# 
+# System Variable : sql_big_selects
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : ON
+# 
+# OFF로 설정하면 MySQL은 실행하는 데 매우 오래 걸릴 가능성이있는 SELECT문(즉, 최적화 프로그램이 검사 된 행 수가 max_join_size 값을 초과한다고 추정하는 문)을 중단합니다.
+# 이것은 바람직하지 않은 WHERE 문이 발행되었을 때 유용합니다. 새 연결의 기본값은 모든 SELECT 문을 허용하는 ON입니다.
+# 
+# max_join_size 시스템 변수를 DEFAULT 이외의 값으로 설정하면 sql_big_selects가 OFF로 설정됩니다.
+#
+# * Apply Option
+# sql_big_selects=ON
+# 
+# --------------------------------------------
+# 
+# @ sql_buffer_result
+# 
+# System Variable : sql_buffer_result
+# Scope : Global, Session
+# Dynamic : Yes
+# Type : Boolean
+# Default Value : OFF
+# 
+# 활성화 된 경우 sql_buffer_result는 SELECT 문의 결과를 임시 테이블에 강제로 넣습니다.
+# 이는 MySQL이 테이블 잠금을 조기에 해제하는 데 도움이되며 클라이언트에 결과를 보내는 데 시간이 오래 걸리는 경우에 유용 할 수 있습니다. 기본값은 OFF입니다.
+#
+# * Apply Option
+# sql_buffer_result=OFF
+# 
+# --------------------------------------------
+# 
 # @ sql_log_off :
 # 
 # Property : Value
