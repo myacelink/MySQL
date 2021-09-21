@@ -820,7 +820,8 @@
 # 
 # max_binlog_cache_size는 트랜잭션 캐시의 크기 만 설정합니다. 명령문 캐시의 상한은 max_binlog_stmt_cache_size 시스템 변수에 의해 결정됩니다.
 # 
-# max_binlog_cache_size 세션에 대한 가시성은 binlog_cache_size 시스템 변수의 세션에 대한 가시성과 일치합니다. 즉, 값을 변경하면 값이 변경된 후 시작된 새 세션에만 영향을줍니다.
+# max_binlog_cache_size 세션에 대한 가시성은 binlog_cache_size 시스템 변수의 세션에 대한 가시성과 일치합니다.
+# 즉, 값을 변경하면 값이 변경된 후 시작된 새 세션에만 영향을줍니다.
 #
 # * Apply Option
 # max_binlog_cache_size=18446744073709551615
