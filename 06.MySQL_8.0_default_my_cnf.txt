@@ -128,11 +128,13 @@ max_binlog_size = 512M
 # expire_logs_day = 14
 log_bin_trust_function_creators = 1
 sync_binlog = 1
+master_info_repository = TABLE
 
 ## replication - Slave
 relay_log = //usr/local/mysql/logs/relay_log
 relay_log_purge = 1
 read_only = 1
+relay_log_info_repository = TABLE
 
 
 ## ------------------------------------------------------------------------------------
